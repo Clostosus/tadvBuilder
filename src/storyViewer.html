@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>My Story-Viewer</title>
+</head>
+<body>
+<div id="game"></div>
+
+<script>
+    const story = {
+        // INSERT JSON STORY HERE
+
+    };
+
+    function showScene(key)
+    {
+        const scene = story[key];
+        if (!scene) return;
+        let html = `<h2>${key}</h2><p>${scene.text}</p>`;
+        if (scene.choices !== undefined && scene.choices.length !== 0) {
+            scene.choices.forEach(c => {
+                html += `<button onclick='showScene("${c.next}")'>${c.text}</button><br>`;
+            });
+        }
+        document.getElementById('game').innerHTML = html;
+    }
+
+    showScene("start");
+</script>
+</body>
+</html>

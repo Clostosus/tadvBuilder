@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Choose Your Own Adventure</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<div id="userNotice" class="section sectionHighlighted">
+    <p class="bluesidebarP"><strong>Prototyp:</strong> Diese Anwendung befindet sich in der Entwicklung und dient ausschließlich Demonstrationszwecken. Es wird keinerlei Haftung für Funktionalität, Korrektheit oder die Eignung für bestimmte Zwecke übernommen.</p>
+    <p><strong>Technischer Hinweis:</strong> Dieses HTML-Tool ist vollständig offlinefähig. Es lädt <u>keine externen Ressourcen</u> und funktioniert ohne Internetverbindung. Es werden keinerlei Daten übertragen und es findet kein Tracking statt.</p>
+    <p>Du kannst diese Datei lokal speichern, per USB weitergeben oder im Browser über Doppelklick starten. </p>
+    <p><strong>Mobilnutzung:</strong> Die Anwendung funktioniert auch auf Smartphones und Tablets. Aufgrund des begrenzten Platzes empfehlen wir Querformat oder Tablet-Größe für komfortables Schreiben und Lesen. Ein Speichern von JSON-Daten ist ebenfalls mobil durch Kopieren möglich.</p>
+</div>
+
+<div id="intro" class="intro sectionHighlighted">
+    <h1>Choose Your Own Adventure</h1>
+    <h2>Ein Tool zum Schreiben verzweigter Entscheidungsgeschichten direkt im Browser</h2>
+    <p>Dieses Tool hilft dir beim Erstellen von verzweigten Erlebnissen: sogenannte "Entscheidungsgeschichten". Leserinnen und Leser können durch ihre Entscheidungen den Verlauf beeinflussen. Jede Szene bekommt einen eindeutigen Schlüsselnamen, einen Text und eine oder mehrere Auswahlmöglichkeiten, die zu anderen Szenen führen. Du kannst Szenen anlegen, verknüpfen, Vorschauen anzeigen lassen und am Ende das komplette Story-Konstrukt als JSON weiterverwenden oder speichern – alles direkt im Browser, komplett offline und lokal.</p>
+</div>
+
+<div id="sceneEditor" class="section">
+    <label>Schlüsselname der Szene:<span class="help">Ein eindeutiger Bezeichner, z. B. <code>start</code> oder <code>kapitel1</code></span></label>
+    <label for="scene-key"></label><input type="text" id="scene-key" placeholder="z. B. start">
+
+    <label>Text der Szene:<span class="help">Der eigentliche Erzähltext, der dem Leser angezeigt wird</span></label>
+    <label for="scene-text"></label><textarea id="scene-text" rows="4" placeholder="Hier deine Szene eingeben..."></textarea>
+
+    <label>Entscheidungen:<span class="help">Welche Möglichkeiten der Leser hat und wohin sie führen</span></label>
+    <div id="choices-container">
+        <div class="choice-inputs">
+            <label>
+                <input type="text" class="choice-text" placeholder="Entscheidungstext">
+            </label>
+            <label>
+                <input type="text" class="choice-next" placeholder="Nächste Szene (Schlüssel)">
+            </label>
+        </div>
+    </div>
+    <button onclick="addChoiceField()">Weitere Entscheidung hinzufügen</button>
+    <button onclick="saveScene()">Szene speichern</button>
+</div>
+
+<div class="section">
+    <h2><span class="emoji">🔍</span>Vorschau der aktuellen Szene</h2>
+    <div id="preview">(noch keine Vorschau verfügbar)</div>
+</div>
+
+<div class="section">
+    <h2><span class="emoji">🎮</span>Interaktive Vorschau</h2>
+    <p class="help">Die Geschichte wird ab der Szene mit dem Schlüssel <code>start</code> gestartet</p>
+    <button onclick="startStory()">Geschichte starten</button>
+    <div id="play-area"></div>
+</div>
+
+<div class="section">
+    <h2><span class="emoji">🧭</span>Entscheidungsbaum (ASCII-Übersicht)</h2>
+    <p class="help">Diese einfache Textdarstellung zeigt, welche Szene zu welcher führt. Sie wird automatisch aus deinem Story-Aufbau generiert.</p>
+    <pre id="tree-output">(noch kein Baum erstellt)</pre>
+    <button onclick="renderTree()">Entscheidungsbaum aktualisieren</button>
+</div>
+
+<div class="section">
+    <h2><span class="emoji">🧾</span>Technische Ausgabe als JSON</h2>
+    <p class="help">Dies ist die interne Struktur deiner Geschichte. Du kannst sie kopieren, speichern oder später weiterverwenden, z. B. in einer Spielengine oder einem Viewer.</p>
+    <pre id="output">(noch keine Szenen erstellt)</pre>
+</div>
+
+<div class="section">
+<p class="help">Du kannst dein JSON in dieses Template einsetzen, um eine Wiedergabeseite zu erstellen:</p>
+<pre id="storyViewerTemplate">
+</pre>
+</div>
+
+<script src="insertViewerTemplate.js"></script>
+<script src="storyBuilder.js"></script>
+</body>
