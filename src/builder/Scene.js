@@ -72,6 +72,50 @@ export default class Scene {
     }
 
     /**
+     * Creates a new Scene instance from a JSON text.
+     * @returns {Scene} New Scene instance or null if parsing fails.
+     * @param {string} key
+     * @param {object|string} json
+     */
+    static fromJson(key,json)
+    {
+        if (!key || !json) return null;
+
+        let parsedObject = null;
+        // accept both raw string or parsed object
+        if (typeof json === 'string') {
+            try {
+                parsedObject = JSON.parse(json);
+            } catch (e) {
+                console.error(`Failed to parse JSON for scene ${key}: ${e}`);
+                return null;
+            }
+        } else if (typeof json === 'object') {
+            parsedObject = json;
+        } else {
+            console.error(`Failed to parse JSON for scene ${key}: Invalid JSON type`);
+            return null;
+        }
+        
+        if(!parsedObject.text || typeof parsedObject.text !== 'string'){
+            console.error(`Scene ${key} missing text property.`);
+            return null;
+        }
+
+        const scene = new Scene(key, parsedObject.text, null,[]);
+
+        // handle optional choices (leaf scenes may have none)
+        if (Array.isArray(parsedObject.choices)) {
+            for (const c of parsedObject.choices) {
+                if (!c || typeof c.text !== 'string' || typeof c.next !== 'string') continue;
+                scene.addChoice(c.text, c.next);
+            }
+        }
+
+        return scene;
+    }
+
+    /**
      * Converts the scene into a plain JSON-compatible object.
      * @returns {{text: string, choices: Array<{text: string, next: string}>}}
      */
@@ -81,9 +125,9 @@ export default class Scene {
         for (const [next, text] of this.choices.entries()) {
             choicesArray.push({ text, next });
         }
-        return {
-            text: this.text,
-            choices: choicesArray
-        };
+        if(choicesArray.length === 0){
+            return { text: this.text };
+        }
+        return { text: this.text, choices: choicesArray };
     }
 }

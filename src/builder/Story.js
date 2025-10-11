@@ -101,14 +101,7 @@ export default class Story {
         return result;
     }
 
-    /**
-     * Builds the story tree from plain JSON text.
-     * @param {Object} jsonData
-     */
-    loadFromJSON(jsonData)
-    {
-        // TODO: implement loadFromJSON() in Story.js
-    }
+
 
     /**
      * Converts the entire story into a JSON-compatible structure.

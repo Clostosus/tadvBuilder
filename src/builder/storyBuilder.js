@@ -1,7 +1,9 @@
 import Scene from './Scene.js';
 import Story from "./Story.js";
+import SaveLoad from "./SaveLoad.js";
 
-const story = new Story();
+// const story = new Story();
+let story = new Story();
 
 /**
  * Renders the story tree as a string.
@@ -149,3 +151,51 @@ window.renderTree = renderTree;
 window.updateOutput = updateOutput;
 window.renderPreview = renderPreview;
 window.renderScene = renderScene;
+
+// === JSON Import/Export GUI ===
+
+const fileInput = document.getElementById("json-file");
+const importBtn = document.getElementById("import-json");
+const exportBtn = document.getElementById("export-json");
+const importStatus = document.getElementById("import-status");
+
+// Reference to the current story object
+window.currentStory = null;
+
+// --- IMPORT ---
+importBtn.addEventListener("click", async () => {
+    if (!fileInput.files.length) {
+        importStatus.textContent = "Bitte zuerst eine JSON-Datei auswählen.";
+        return;
+    }
+
+    const file = fileInput.files[0];
+    const fileUrl = URL.createObjectURL(file);
+
+    try {
+        story = await SaveLoad.loadFromJson(fileUrl, Scene, Story);
+        if(!story){
+            importStatus.textContent = "Fehler beim Laden: Story konnte nicht geladen werden.";
+            return;
+        }
+        window.currentStory = story;
+        document.getElementById("output").textContent = JSON.stringify(story.toJSON(), null, 2);
+        importStatus.textContent = `"${file.name}" erfolgreich geladen (${story.scenes.size} Szenen).`;
+
+        if (typeof renderTree === "function") renderTree();
+        if (typeof startStory === "function") startStory();
+    } catch (err) {
+        importStatus.textContent = "Fehler beim Laden: " + err.message;
+    } finally {
+        URL.revokeObjectURL(fileUrl);
+    }
+});
+
+// --- EXPORT ---
+exportBtn.addEventListener("click", () => {
+    if (!window.currentStory) {
+        alert("Keine Story zum Exportieren vorhanden.");
+        return;
+    }
+    SaveLoad.saveToJson(window.currentStory, "story_export.json");
+});
