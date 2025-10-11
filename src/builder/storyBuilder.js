@@ -32,7 +32,7 @@ function addChoiceField()
     document.getElementById('choices-container').appendChild(container);
 }
 
-function saveScene()
+function addScene()
 {
     const key = document.getElementById('scene-key').value.trim();
     const text = document.getElementById('scene-text').value.trim();
