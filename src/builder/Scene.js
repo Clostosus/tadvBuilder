@@ -72,8 +72,18 @@ export default class Scene {
     }
 
     /**
-     * Converts the scene into a JSON-compatible object.
+     * Converts the scene into a plain JSON-compatible object.
      * @returns {{text: string, choices: Array<{text: string, next: string}>}}
      */
-    toJSON() { return { text: this.text, choices: this.getAllChoices() }; }
+    toJSON()
+    {
+        const choicesArray = [];
+        for (const [next, text] of this.choices.entries()) {
+            choicesArray.push({ text, next });
+        }
+        return {
+            text: this.text,
+            choices: choicesArray
+        };
+    }
 }

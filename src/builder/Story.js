@@ -23,7 +23,21 @@ export default class Story {
         if (this.scenes.has(scene.key)) return false;
 
         this.scenes.set(scene.key, scene);
-        if (!this.root) this.root = scene; // first scene becomes root
+        if (!this.root) {
+            this.root = scene;
+            return true;
+        } // first scene becomes root
+
+        if (!scene.parent && this.root && this.scenes.size > 0) {
+            const parent = this.findParent(scene.key);
+            if (parent) {
+                scene.parent = parent;
+                parent.addChoice(scene.text || `to ${scene.key}`, scene.key);
+            } else {
+                this.root.addChoice(scene.text || `to ${scene.key}`, scene.key);
+                scene.parent = this.root;
+            }
+        }
 
         // ensure parent linkage integrity
         if (scene.parent && this.scenes.has(scene.parent.key)) {
@@ -33,6 +47,21 @@ export default class Story {
 
         return true;
     }
+
+    /**
+     * Finds the parent Scene whose choices reference the given scene key.
+     * @param {string} sceneKey - Key of the scene to find a parent for.
+     * @returns {Scene|null} The parent Scene, or null if not found.
+     */
+    findParent(sceneKey) {
+        for (const scene of this.scenes.values()) {
+            if (scene.choices instanceof Map && scene.choices.has(sceneKey)) {
+                return scene;
+            }
+        }
+        return null;
+    }
+
 
     /**
      * Retrieves a scene by key.
@@ -46,63 +75,52 @@ export default class Story {
      * Returns an array of objects containing the Scene instance and its depth in the story tree.
      * @returns {Array<{ scene: Scene, depth: number }>}
      */
-    getAllScenesDFS() {
+    getAllScenesDFS()
+    {
         if (!this.root) return [];
         const result = [];
         const stack = [];
         stack.push({ scene: this.root, depth: 0 });
 
         while (stack.length > 0) {
-            const current = stack.pop();
-            const scene = current.scene;
-            const depth = current.depth;
+            const { scene, depth } = stack.pop();
+            result.push({ scene, depth });
 
-            result.push({ scene: scene, depth: depth });
-            const choices = scene.choices;
-            for (let i = choices.length - 1; i >= 0; i--) {
-                const choice = choices[i];
-                const child = this.getScene(choice.next);
+            const children = [];
+            for (const [next] of scene.choices.entries()) {
+                const child = this.getScene(next);
                 if (child) {
-                    stack.push({ scene: child, depth: depth + 1 });
+                    children.push(child);
                 }
+            }
+            // reverse order to get initial order
+            for (let i = children.length - 1; i >= 0; i--) {
+                stack.push({ scene: children[i], depth: depth + 1 });
             }
         }
         return result;
     }
 
     /**
-     * Builds the story tree from plain JSON data.
+     * Builds the story tree from plain JSON text.
      * @param {Object} jsonData
      */
     loadFromJSON(jsonData)
     {
-        // First pass: create Scene objects
-        for (const [key, data] of Object.entries(jsonData)) {
-            const scene = new Scene(key, data.text);
-            this.addScene(scene);
-        }
-
-        // Second pass: link choices
-        for (const [key, data] of Object.entries(jsonData)) {
-            const parent = this.getScene(key);
-            if (!Array.isArray(data.choices)) continue;
-
-            for (const choice of data.choices) {
-                const child = this.getScene(choice.next);
-                if (child && !child.parent) {
-                    child.parent = parent;
-                    parent.addChoice(choice.text, choice.next);
-                }
-            }
-        }
+        // TODO: implement loadFromJSON() in Story.js
     }
 
     /**
-     * Exports all scenes as plain JSON.
+     * Converts the entire story into a JSON-compatible structure.
+     * Each scene key maps to an object with `text` and `choices` array.
+     * @returns {Object<string, {text: string, choices: Array<{text: string, next: string}>}>}
      */
-    toJSON() {
-        const out = {};
-        for (const [key, scene] of this.scenes) out[key] = scene.toJSON();
-        return out;
+    toJSON()
+    {
+        const result = {};
+        for (const [key, scene] of this.scenes.entries()) {
+            result[key] = scene.toJSON();
+        }
+        return result;
     }
 }
