@@ -15,16 +15,16 @@ function doSomething()
 ```
 
 ### Variables
-* Variable names are all lowercase, and use "_" as separator.
-* For multiple instances, use numbers "scene1, scene2" or postfixes "scene_current", "scene_next".
+* Variable names are camelCase, and never use "_" as separator.
+* For multiple instances, use numbers "scene1, scene2" or postfixes "sceneCurrent", "sceneNext".
 * Declare variables upon first usage.
 * Declare iterators in their loop.
 * Use `let` or `const` instead of `var` for declaring variables.
 
 ```javascript
-let n_scenes = 10;
-let scene_current = "scene1";
-let scene_next = "scene2";
+let nScenes = 10;
+let sceneCurrent = "scene1";
+let sceneNext = "scene2";
 
 for (let i = 0;i<10;i++){
     // do something
