@@ -1,0 +1,361 @@
+{
+  "start": {
+    "text": "You awaken with a jolt as alarms blare across the bridge of the starship *Odyssey*.\nRed lights flash, and a synthesized voice repeats, \"Temporal anomaly detected.\nCourse deviation imminent.\" Captain Eva Rostova’s voice cuts through the chaos, \"Report!\"",
+    "choices": [
+      {
+        "text": "Check your station’s diagnostics.",
+        "next": "stationdiagnostics"
+      },
+      {
+        "text": "Try to contact Captain Rostova.",
+        "next": "contactrostova"
+      },
+      {
+        "text": "Secure loose equipment around you.",
+        "next": "secureequipment"
+      }
+    ]
+  },
+  "stationdiagnostics": {
+    "text": "Your station’s diagnostics panel flickers erratically, displaying a cascade of unknown error codes.\nA priority message blinks insistently.\nDo you:",
+    "choices": [
+      {
+        "text": "Attempt to decipher the error codes?",
+        "next": "errorcodes"
+      },
+      {
+        "text": "Open the priority message?",
+        "next": "prioritymsg"
+      },
+      {
+        "text": "Report the diagnostic errors to the bridge?",
+        "next": "reporttobridge"
+      }
+    ]
+  },
+  "errorcodes": {
+    "text": "The error codes seem to be a complex mix of temporal physics and unknown alien script.\nYou recognize a recurring symbol that looks vaguely familiar from ancient Earth texts.\nDo you:",
+    "choices": [
+      {
+        "text": "Focus on translating the recurring symbol?",
+        "next": "translatesymbol"
+      },
+      {
+        "text": "Try to cross-reference the codes with the ship’s database?",
+        "next": "shipdbcrossref"
+      },
+      {
+        "text": "Give up on the codes and open the priority message?",
+        "next": "prioritymsg"
+      }
+    ]
+  },
+  "translatesymbol": {
+    "text": "The recurring symbol reminds you of a theoretical paper on temporal distortions you once read.\nIt was associated with a long-lost civilization rumored to have mastered time travel.",
+    "choices": [
+      {
+        "text": "Try to access that research paper in the ship’s archives?",
+        "next": "archiveresearchpaper"
+      },
+      {
+        "text": "Consider the implications of encountering technology from such an advanced civilization?",
+        "next": "considertechimplications"
+      }
+    ]
+  },
+  "archiveresearchpaper": {
+    "text": "You access the ship’s archives and locate the theoretical paper.\nIt details the Chronos Drive, a hypothetical technology capable of manipulating time, and mentions a civilization known as the Tempus Imperium.\nThe recurring symbol is their emblem.",
+    "choices": [
+      {
+        "text": "Delve deeper into the Tempus Imperium’s history?",
+        "next": "tempushistory"
+      },
+      {
+        "text": "Consider the implications of encountering their lost technology?",
+        "next": "losttechimplications"
+      }
+    ]
+  },
+  "tempushistory": {
+    "text": "You delve deeper into the Tempus Imperium’s history, discovering fragmented accounts of their rise and mysterious disappearance.\nThey were said to have vanished suddenly, leaving behind no trace except for whispers and legends."
+  },
+  "losttechimplications": {
+    "text": "The implications of encountering lost temporal technology are staggering.\nCould this anomaly be a remnant of the Tempus Imperium?\nOr something else entirely?\nThe possibilities are both exciting and deeply unsettling."
+  },
+  "considertechimplications": {
+    "text": "The idea of encountering technology capable of manipulating time is both exhilarating and terrifying.\nWhat could have caused this anomaly?\nAnd what happened to the civilization that created it?",
+    "choices": [
+      {
+        "text": "Share your thoughts with the bridge crew?",
+        "next": "sharetechimplications"
+      },
+      {
+        "text": "Keep your speculation to yourself for now?",
+        "next": "keeptechspeculation"
+      }
+    ]
+  },
+  "sharetechimplications": {
+    "text": "You relay your findings about the Tempus Imperium and the recurring symbol to the bridge.\nCaptain Rostova listens intently. \"Temporal manipulation… that’s a dangerous game.\nWe need to proceed with extreme caution.\""
+  },
+  "keeptechspeculation": {
+    "text": "You decide to keep your speculation about the Tempus Imperium to yourself for now.\nThe crew is already on edge, and introducing theories about ancient time travelers might not be helpful."
+  },
+  "shipdbcrossref": {
+    "text": "You attempt to cross-reference the error codes with the ship’s database, but the system is sluggish and unresponsive, likely affected by the temporal anomaly.",
+    "choices": [
+      {
+        "text": "Try a manual override to access the database?",
+        "next": "manualoverridedb"
+      },
+      {
+        "text": "Focus on the priority message instead?",
+        "next": "prioritymsg"
+      }
+    ]
+  },
+  "manualoverridedb": {
+    "text": "You attempt a manual override of the database access protocols.\nAfter a tense moment, the system grants you limited access.\nYou can now search for information related to the error codes.",
+    "choices": [
+      {
+        "text": "Search for known temporal anomalies?",
+        "next": "dbsearchanomalies"
+      },
+      {
+        "text": "Search for the recurring symbol you identified?",
+        "next": "dbsearchsymbol"
+      }
+    ]
+  },
+  "dbsearchanomalies": {
+    "text": "You search the database for known temporal anomalies, hoping to find a similar event that might offer some clues.\nThe search returns numerous entries, but none seem to match the unique characteristics of the one affecting the *Odyssey*."
+  },
+  "prioritymsg": {
+    "text": "The priority message is a scrambled distress signal from a vessel identifying itself as the *Stardust Drifter*.\nThe transmission is fragmented and distorted, but you can make out the words \"…temporal… trapped… need… help…\"",
+    "choices": [
+      {
+        "text": "Attempt to trace the origin of the signal?",
+        "next": "tracesignalorigin"
+      },
+      {
+        "text": "Forward the garbled message to Captain Rostova?",
+        "next": "forwardmsgtocaptain"
+      }
+    ]
+  },
+  "tracesignalorigin": {
+    "text": "You initiate a trace on the *Stardust Drifter’s* signal.\nIt appears to be originating from within the temporal vortex itself, making a precise location difficult to pinpoint.",
+    "choices": [
+      {
+        "text": "Attempt to send a reply to the distress signal?",
+        "next": "replydistresssignal"
+      },
+      {
+        "text": "Focus on understanding the temporal anomaly first?",
+        "next": "understandtempanomaly"
+      }
+    ]
+  },
+  "replydistresssignal": {
+    "text": "You send a short reply to the *Stardust Drifter’s* garbled signal, acknowledging their distress and stating that the *Odyssey* is attempting to assist.\nYou hold your breath, hoping for a response.",
+    "choices": [
+      {
+        "text": "You continue to try and pinpoint the *Stardust Drifter’s* exact location within the temporal vortex, but the fluctuating spatial distortions make it nearly impossible.",
+        "next": "locatestardustdrifter"
+      },
+      {
+        "text": "Focus on the temporal anomaly affecting your own ship?",
+        "next": "ownshiptempanomaly"
+      }
+    ]
+  },
+  "locatestardustdrifter": {
+    "text": "You continue to try and pinpoint the *Stardust Drifter’s* exact location within the temporal vortex, but the fluctuating spatial distortions make it nearly impossible."
+  },
+  "ownshiptempanomaly": {
+    "text": "You decide to focus your efforts on understanding the temporal anomaly that has ensnared the *Odyssey*.\nPerhaps by understanding it, you can also help the *Stardust Drifter*.",
+    "choices": [
+      {
+        "text": "Analyze the energy signatures more intensely?",
+        "next": "energysignatures"
+      },
+      {
+        "text": "Try to determine the anomaly’s point of origin?",
+        "next": "determineanomalyorigin"
+      }
+    ]
+  },
+  "energysignatures": {
+    "text": "You focus your station’s advanced sensors on the energy signature.\nIt seems to be pulsating with increasing frequency.\nYou can’t identify its exact nature, but it feels… intentional.",
+    "choices": [
+      {
+        "text": "Attempt to isolate the source of the energy pulse?",
+        "next": "isolatenenergysrc"
+      },
+      {
+        "text": "Compare the pulse pattern to known energy signatures of artificial objects?",
+        "next": "comppulsepattern"
+      }
+    ]
+  },
+  "comppulsepattern": {
+    "text": "You compare the energy pulse pattern to known signatures of artificial objects in your database.\nThere are no exact matches, but some similarities to ancient alien communication signals raise intriguing possibilities."
+  },
+  "determineanomalyorigin": {
+    "text": "You try to determine the anomaly’s point of origin, running complex calculations based on its current trajectory and energy field.\nThe data suggests it may have originated from a region of space previously uncharted."
+  },
+  "understandtempanomaly": {
+    "text": "You decide to focus your efforts on understanding the temporal anomaly that has ensnared the *Odyssey*.\nPerhaps by understanding it, you can also help the *Stardust Drifter*.",
+    "choices": [
+      {
+        "text": "Analyze the energy signatures more intensely?",
+        "next": "energysignatures"
+      },
+      {
+        "text": "Try to determine the anomaly’s point of origin?",
+        "next": "determineanomalyorigin"
+      }
+    ]
+  },
+  "forwardmsgtocaptain": {
+    "text": "You forward the garbled distress signal to Captain Rostova.\nA tense silence follows on the comms before she replies, \"Understood.\nHelm, adjust course slightly.\nLet’s see if we can get a better lock on that signal.\"",
+    "choices": [
+      {
+        "text": "Offer to assist in analyzing the signal?",
+        "next": "assistanalysis"
+      },
+      {
+        "text": "Return to your station and await further orders?",
+        "next": "stationwaitorders"
+      }
+    ]
+  },
+  "assistanalysis": {
+    "text": "You offer your expertise in signal analysis to Captain Rostova.\nShe nods. \"Alright, Ensign.\nSee what you can make of that mess.\" She directs you to a console displaying the fragmented transmission.",
+    "choices": [
+      {
+        "text": "Try to filter out the static?",
+        "next": "filteroutstatic"
+      },
+      {
+        "text": "Look for any repeating patterns in the signal?",
+        "next": "signalrepeatpatterns"
+      }
+    ]
+  },
+  "filteroutstatic": {
+    "text": "You try to filter out the static from the *Stardust Drifter’s* distress signal, hoping to isolate any clearer fragments of their message.\nIt’s a painstaking process, but slowly, some words begin to emerge."
+  },
+  "signalrepeatpatterns": {
+    "text": "You analyze the fragmented distress signal for any repeating patterns or sequences.\nYou notice a recurring three-note burst within the static – could it be some kind of identifier or code?"
+  },
+  "stationwaitorders": {
+    "text": "You return to your station, feeling a sense of helplessness.\nAll you can do is wait for orders and hope the captain and the crew can navigate this crisis.",
+    "choices": [
+      {
+        "text": "Monitor your systems for any further anomalies?",
+        "next": "monitorsystems"
+      },
+      {
+        "text": "Try to contact any other nearby starships?",
+        "next": "contactnearbyships"
+      }
+    ]
+  },
+  "monitorsystems": {
+    "text": "You keep a close watch on your station’s systems, monitoring for any signs of further anomalies or malfunctions caused by the temporal distortion."
+  },
+  "contactnearbyships": {
+    "text": "You attempt to contact any other starships that might be within range, broadcasting a general alert about the temporal anomaly and your current situation.\nYou wait anxiously for a reply."
+  },
+  "reporttobridge": {
+    "text": "You report the diagnostic errors to the bridge, but the comms officer sounds overwhelmed. \"We’re experiencing system-wide fluctuations,\" she says. \"Just hold tight and await further instructions.\"",
+    "choices": [
+      {
+        "text": "Continue to monitor your station closely?",
+        "next": "monitorstationclosely"
+      },
+      {
+        "text": "Try to independently troubleshoot the errors?",
+        "next": "errorcodes"
+      }
+    ]
+  },
+  "monitorstationclosely": {
+    "text": "You remain at your station, your eyes glued to the fluctuating sensor readings.\nThe anomaly’s pull seems to be intensifying.\nYou notice a strange energy signature building within the vortex.",
+    "choices": [
+      {
+        "text": "Report the energy signature to the bridge?",
+        "next": "reportsignature"
+      },
+      {
+        "text": "Try to analyze the energy signature yourself?",
+        "next": "energysignatures"
+      }
+    ]
+  },
+  "reportsignature": {
+    "text": "You report the unusual energy signature to the bridge.\nThe comms officer sounds concerned. \"Captain, Ensign reports a fluctuating energy signature within the temporal anomaly.\" Captain Rostova’s voice comes back, \"Keep a close watch on it, Ensign.\nLet us know if it intensifies.\"",
+    "choices": [
+      {
+        "text": "Continue monitoring the energy signature?",
+        "next": "uneasymonitoring"
+      },
+      {
+        "text": "Scan for any other unusual readings?",
+        "next": "readingsscan"
+      }
+    ]
+  },
+  "uneasymonitoring": {
+    "text": "You continue to monitor the fluctuating energy signature within the vortex.\nIt grows stronger, and the rhythmic pulsing becomes more pronounced.\nYou feel a growing sense of unease."
+  },
+  "readingsscan": {
+    "text": "You initiate a ship-wide sensor sweep, looking for any other unusual readings that might be related to the temporal anomaly.\nYou detect faint gravitational ripples emanating from within the vortex."
+  },
+  "contactrostova": {
+    "text": "You try to raise Captain Rostova on the comms, but only static answers.\nThrough the viewport, you see a swirling vortex of colors unlike anything you’ve ever witnessed.",
+    "choices": [
+      {
+        "text": "Increase magnification on the vortex?",
+        "next": "magnification"
+      },
+      {
+        "text": "Try other communication channels?",
+        "next": "channelswitch"
+      }
+    ]
+  },
+  "magnification": {
+    "text": "As you increase the magnification, the swirling vortex resolves into a breathtaking display of distorted space-time.\nYou see fleeting images within it – strange landscapes and unfamiliar star systems.",
+    "choices": [
+      {
+        "text": "Record the visual data for later analysis?",
+        "next": "visualrecording"
+      },
+      {
+        "text": "Attempt to analyze the energy signatures emanating from the vortex?",
+        "next": "chaoticpattern"
+      }
+    ]
+  },
+  "visualrecording": {
+    "text": "You activate your personal recording device and capture the mesmerizing and terrifying images within the vortex.\nThe data could be invaluable, but it doesn’t help the immediate situation.",
+    "choices": [
+      {
+        "text": "Continue recording different aspects of the vortex?",
+        "next": "recorderas"
+      },
+      {
+        "text": "Switch to analyzing the energy readings of the vortex?",
+        "next": "analyzeenergy"
+      }
+    ]
+  },
+  "recorderas": {
+    "text": "You continue to record the bizarre phenomena unfolding within the temporal vortex.\nYou capture images of what appear to be glimpses into different eras and realities."
+  },
+  "analyzeenergy": {
+    "text": "You focus your station’s scanners on the energy emanating from the vortex.\nThe readings are chaotic, but you detect a repeating pattern – a rhythmic pulse unlike anything in your database."
+  }
+}
