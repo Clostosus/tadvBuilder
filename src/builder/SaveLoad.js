@@ -8,7 +8,7 @@ export default class SaveLoad {
      * @param {string} filename
      * @param {Object} SceneClass
      * @param {Object} StoryClass
-     * @returns {Story | null} Returns new story or null if loading fails.
+     * @returns {Story | null | Promise<string>} Returns new story,null deserialization fails, or Promise<string> if loading fails.
      */
     static async loadFromJson(filename,SceneClass, StoryClass)
     {
@@ -47,11 +47,12 @@ export default class SaveLoad {
      * Saves the story tree as JSON text.
      * @param {Story} story
      * @param {string} filename
-     * @returns {boolean}
+     * @returns {boolean | Promise<boolean>}
      */
     static async saveToJson(story, filename)
     {
         if (!story || !filename || typeof filename !== 'string') {
+            console.error("Ungültige Eingabeparameter in saveToJson: story = ", story, ", filename = ", filename);
             return false;
         }
 
