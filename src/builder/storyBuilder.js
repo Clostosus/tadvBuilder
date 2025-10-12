@@ -3,7 +3,7 @@ import Story from "./Story.js";
 import SaveLoad from "./SaveLoad.js";
 
 // const story = new Story();
-let story = new Story();
+let story = new Story(Scene);
 
 /**
  * Renders the story tree as a string.

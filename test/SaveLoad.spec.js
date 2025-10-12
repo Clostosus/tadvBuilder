@@ -21,7 +21,7 @@ describe("Test import", () => {
 
 describe("Test export", () => {
     it("export a story to json", async () => {
-        let story = new Story();
+        let story = new Story(Scene);
 
         const storyData = [
             { key: "start", text: "Erik hat endlich sein wohlverdientes Weihnachtsgeld erhalten und beschließt, es für ein paar lang gehegte Träume zu nutzen: ein neues Auto, ein gemütliches Eigenheim und ein gepflegter Garten.", choices: [
