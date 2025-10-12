@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Jasmine Test Runner v5.12.0</title>
+
+  <link rel="shortcut icon" type="image/png" href="lib/jasmine-5.12.0/jasmine_favicon.png">
+  <link rel="stylesheet" href="lib/jasmine-5.12.0/jasmine.css">
+
+  <script src="lib/jasmine-5.12.0/jasmine.js"></script>
+  <script src="lib/jasmine-5.12.0/jasmine-html.js"></script>
+  <script src="lib/jasmine-5.12.0/boot0.js"></script>
+  <!-- optional: include a file here that configures the Jasmine env -->
+  <script src="lib/jasmine-5.12.0/boot1.js"></script>
+</head>
+
+<body>
+    <!-- include source files here... -->
+    <script type="module">
+        import Scene from "./src/builder/Scene.js";
+    </script>
+
+    <!-- include spec/test files here... -->
+    <script type="module">
+        import "./test/dummy.spec.js"
+        import "./test/Scene.spec.js";
+    </script>
+</body>
+</html>

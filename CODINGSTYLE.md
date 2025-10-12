@@ -60,3 +60,4 @@ For developer-facing changes, we have these keywords:
 * Codechange: Changes to the code the user is not going to notice. Refactors, modernization, etc.
 * Cleanup: Similar to Codechange, but when it is more about removing old code, rather than an actual change.
 * Codefix: Fixing problems in earlier commits that the user is not actually going to notice. Wrong comments, missing files, CI changes.
+* Test: Adding tests.
