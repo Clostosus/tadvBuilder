@@ -27,7 +27,7 @@ export default class SaveLoad {
         }
         if (!data || typeof data !== 'object') { return null; }
 
-        const story = new StoryClass();
+        const story = new StoryClass(SceneClass);
 
         for (const [key, value] of Object.entries(data)) {
             const scene = SceneClass.fromJson(key, value);
