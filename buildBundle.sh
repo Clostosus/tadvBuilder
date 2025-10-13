@@ -1,6 +1,5 @@
 #!/bin/bash
 # support umlaute and other utf8 stuff
-export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 set -e
 
@@ -17,13 +16,11 @@ esbuild "$BUILDER_SRC_DIR/main.js" --bundle --minify --charset=utf8 --outfile="$
 # read css ,js and other html file contents
 CSS=$(<"$BUILDER_SRC_DIR/style.css")
 JS=$(<"$BUNDLE_JS")
-HTML_VIEWER=$(<"src/storyViewer.html")
 HTML_BUILDER=$(<"$BUILDER_SRC_DIR/storyBuilder.html")
 
 # inline everything
 awk -v css="$CSS" \
-    -v js="$JS" \
-    -v viewer="$HTML_VIEWER" '
+    -v js="$JS" '
 {
     currentLine = $0
 
@@ -32,9 +29,11 @@ awk -v css="$CSS" \
         print "<style>" css "</style>"
     else if (currentLine ~ /<script src="main.js" type="module"><\/script>/)
         print "<script>" js "</script>"
-    else if (currentLine ~ /<pre id="storyViewerTemplate">/)
-        print "<pre id=\"storyViewerTemplate\">" viewer "</pre>"
-    else
+    else if (currentLine ~ /<pre id="storyViewerTemplate">/) {
+        print "<pre id=\"storyViewerTemplate\">"
+        # escape html:
+        system("cat src/storyViewer.html | sed \"s/&/\\&amp;/g; s/</\\&lt;/g; s/>/\\&gt;/g\"")
+    } else
         print currentLine
 }
 ' <<< "$HTML_BUILDER" > "$OUT_HTML"
