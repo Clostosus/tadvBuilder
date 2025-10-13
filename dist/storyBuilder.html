@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Choose Your Own Adventure</title>
+<style>body {
+    font-family: system-ui, sans-serif;
+    margin: 2rem;
+    line-height: 1.6;
+    background-color: #f8fafc;
+    color: #1e293b;
+}
+h1, h2 {
+    color: #0f172a;
+}
+textarea, input, select, button {
+    display: block;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    padding: 0.6rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    box-sizing: border-box;
+}
+input[type="text"]::before, textarea::before {
+    font-family: inherit;
+}
+label {
+    margin-top: 1rem;
+    font-weight: bold;
+}
+button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 500;
+}
+button:hover {
+    background-color: #2563eb;
+}
+.section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+.sectionHighlighted {
+    background-color: #e0f2fe;
+    border-left: 5px solid #0ea5e9;
+}
+.bluesidebarP {
+    font-size: 0.875rem;
+    background-color: #cfeafe;
+    padding: 0.5rem 1rem;
+    border-left: 4px solid #3b82f6;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+#output, #preview, #play-area, #tree-output {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    padding: 1rem;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    font-family: ui-monospace, SFMono-Regular, monospace;
+}
+.choice-inputs {
+    margin-bottom: 1rem;
+    display: grid;
+    gap: 0.5rem;
+}
+.help {
+    font-size: 0.875rem;
+    color: #475569;
+    margin-top: -0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.intro {
+    padding: 1rem;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+.intro h1 {
+    font-size: 2rem;
+    color: #1d4ed8;
+    margin-bottom: 0.25rem;
+}
+.intro h2 {
+    margin-top: -0.5rem;
+    color: #334155;
+    font-weight: normal;
+    font-size: 1.2rem;
+}
+
+.emoji {
+    font-style: normal;
+    margin-right: 0.5rem;
+}
+#play-area button {
+    margin-top: 0.5rem;
+}
+#userNotice {
+    font-size: 0.9rem;
+}
+#storyViewerTemplate {
+    white-space: pre-wrap;
+    background-color: #e2e8f0;
+    padding: 1rem;
+    border-radius: 6px;
+}</style>
+</head>
+<body>
+<div id="userNotice" class="section sectionHighlighted">
+    <p class="bluesidebarP"><strong>Prototyp:</strong> Diese Anwendung befindet sich in der Entwicklung und dient ausschließlich Demonstrationszwecken. Es wird keinerlei Haftung für Funktionalität, Korrektheit oder die Eignung für bestimmte Zwecke übernommen.</p>
+    <p><strong>Technischer Hinweis:</strong> Dieses HTML-Tool ist vollständig offlinefähig. Es lädt <u>keine externen Ressourcen</u> und funktioniert ohne Internetverbindung. Es werden keinerlei Daten übertragen und es findet kein Tracking statt.</p>
+    <p>Du kannst diese Datei lokal speichern, per USB weitergeben oder im Browser über Doppelklick starten. </p>
+    <p><strong>Mobilnutzung:</strong> Die Anwendung funktioniert auch auf Smartphones und Tablets. Aufgrund des begrenzten Platzes empfehlen wir Querformat oder Tablet-Größe für komfortables Schreiben und Lesen. Ein Speichern von JSON-Daten ist ebenfalls mobil durch Kopieren möglich.</p>
+</div>
+
+<div id="intro" class="intro sectionHighlighted">
+    <h1>Choose Your Own Adventure</h1>
+    <h2>Ein Tool zum Schreiben verzweigter Entscheidungsgeschichten direkt im Browser</h2>
+    <p>Dieses Tool hilft dir beim Erstellen von verzweigten Erlebnissen: sogenannte "Entscheidungsgeschichten". Leserinnen und Leser können durch ihre Entscheidungen den Verlauf beeinflussen. Jede Szene bekommt einen eindeutigen Schlüsselnamen, einen Text und eine oder mehrere Auswahlmöglichkeiten, die zu anderen Szenen führen. Du kannst Szenen anlegen, verknüpfen, Vorschauen anzeigen lassen und am Ende das komplette Story-Konstrukt als JSON weiterverwenden oder speichern – alles direkt im Browser, komplett offline und lokal.</p>
+</div>
+
+<div id="sceneEditor" class="section">
+    <label>Schlüsselname der Szene:<span class="help">Ein eindeutiger Bezeichner, z. B. <code>start</code> oder <code>kapitel1</code></span></label>
+    <label for="scene-key"></label><input type="text" id="scene-key" placeholder="z. B. start">
+
+    <label>Text der Szene:<span class="help">Der eigentliche Erzähltext, der dem Leser angezeigt wird</span></label>
+    <label for="scene-text"></label><textarea id="scene-text" rows="4" placeholder="Hier deine Szene eingeben..."></textarea>
+
+    <label>Entscheidungen:<span class="help">Welche Möglichkeiten der Leser hat und wohin sie führen</span></label>
+    <div id="choices-container">
+        <div class="choice-inputs">
+            <label>
+                <input type="text" class="choice-text" placeholder="Entscheidungstext">
+            </label>
+            <label>
+                <input type="text" class="choice-next" placeholder="Nächste Szene (Schlüssel)">
+            </label>
+        </div>
+    </div>
+    <button onclick="addChoiceField()">Weitere Entscheidung hinzufügen</button>
+    <button onclick="addScene()">Szene speichern</button>
+</div>
+
+<div class="section">
+    <h2><span class="emoji">🔍</span>Vorschau der aktuellen Szene</h2>
+    <div id="preview">(noch keine Vorschau verfügbar)</div>
+</div>
+
+<div class="section">
+    <h2><span class="emoji">🎮</span>Interaktive Vorschau</h2>
+    <p class="help">Die Geschichte wird ab der Szene mit dem Schlüssel <code>start</code> gestartet</p>
+    <button onclick="startStory()">Geschichte starten</button>
+    <div id="play-area"></div>
+</div>
+
+<div class="section">
+    <h2><span class="emoji">🧭</span>Entscheidungsbaum (ASCII-Übersicht)</h2>
+    <p class="help">Diese einfache Textdarstellung zeigt, welche Szene zu welcher führt. Sie wird automatisch aus deinem Story-Aufbau generiert.</p>
+    <pre id="tree-output">(noch kein Baum erstellt)</pre>
+    <button onclick="renderTree()">Entscheidungsbaum aktualisieren</button>
+</div>
+
+<div class="section">
+    <h2><span class="emoji">🧾</span>Technische Ausgabe als JSON</h2>
+    <p class="help">Dies ist die interne Struktur deiner Geschichte. Du kannst sie kopieren, speichern oder später weiterverwenden, z. B. in einer Spielengine oder einem Viewer.</p>
+    <pre id="output">(noch keine Szenen erstellt)</pre>
+</div>
+
+<div class="section">
+    <h2><span class="emoji"></span> JSON importieren / exportieren</h2>
+    <p class="help">Lade eine bestehende Geschichte (JSON) oder exportiere deine aktuelle Arbeit.</p>
+
+    <label for="json-file">JSON-Datei laden:</label>
+    <input type="file" id="json-file" accept=".json" />
+
+    <button id="import-json">Importieren</button>
+    <button id="export-json">Exportieren</button>
+
+    <pre id="import-status">(kein Import durchgeführt)</pre>
+</div>
+
+<div class="section">
+<p class="help">Du kannst dein JSON in dieses Template einsetzen, um eine Wiedergabeseite zu erstellen:</p>
+<pre id="storyViewerTemplate">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="de"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;My Story-Viewer&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id="game"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+    const story = {
+        // INSERT JSON STORY HERE
+
+    };
+
+    function showScene(key)
+    {
+        const scene = story[key];
+        if (!scene) return;
+        let html = `&lt;h2&gt;${key}&lt;/h2&gt;&lt;p&gt;${scene.text}&lt;/p&gt;`;
+        if (scene.choices !== undefined &amp;&amp; scene.choices.length !== 0) {
+            scene.choices.forEach(c =&gt; {
+                html += `&lt;button onclick='showScene("${c.next}")'&gt;${c.text}&lt;/button&gt;&lt;br&gt;`;
+            });
+        }
+        document.getElementById('game').innerHTML = html;
+    }
+
+    showScene("start");
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+</div>
+
+<script>(()=>{var a=class{constructor(e,t="",o=null,r=null){if(this.key=e,this.text=t,this.parent=o,this.choices=new Map,r instanceof Map)for(let[n,c]of r)this.choices.set(n,c);else if(Array.isArray(r))for(let n of r)n.next&&n.text&&this.choices.set(n.next,n.text)}addChoice(e,t){return this.choices.has(t)?!1:(this.choices.set(t,e),!0)}updateChoice(e,t){return this.choices.has(e)?(this.choices.set(e,t),!0):!1}removeChoice(e){return this.choices.delete(e)}getAllChoices(){return Array.from(this.choices,([e,t])=>({text:t,next:e}))}static fromJson(e,t){if(!e||!t)return null;let o=null;if(typeof t=="string")try{o=JSON.parse(t)}catch(n){return console.error(`Failed to parse JSON for scene ${e}: ${n}`),null}else if(typeof t=="object")o=t;else return console.error(`Failed to parse JSON for scene ${e}: Invalid JSON type`),null;if(!o.text||typeof o.text!="string")return console.error(`Scene ${e} missing text property.`),null;let r=new a(e,o.text,null,[]);if(Array.isArray(o.choices))for(let n of o.choices)!n||typeof n.text!="string"||typeof n.next!="string"||r.addChoice(n.text,n.next);return r}toJSON(){let e=[];for(let[t,o]of this.choices.entries())e.push({text:o,next:t});return e.length===0?{text:this.text}:{text:this.text,choices:e}}};var d=class{constructor(e){this.sceneClass=e,this.scenes=new Map,this.root=null}addScene(e){if(!(e instanceof this.sceneClass)||this.scenes.has(e.key))return!1;if(this.scenes.set(e.key,e),!this.root)return this.root=e,!0;if(!e.parent&&this.root&&this.scenes.size>0){let t=this.findParent(e.key);t?(e.parent=t,t.addChoice(e.text||`to ${e.key}`,e.key)):(this.root.addChoice(e.text||`to ${e.key}`,e.key),e.parent=this.root)}return e.parent&&this.scenes.has(e.parent.key)&&this.scenes.get(e.parent.key).addChoice(e.text||`to ${e.key}`,e.key),!0}findParent(e){for(let t of this.scenes.values())if(t.choices instanceof Map&&t.choices.has(e))return t;return null}getScene(e){return this.scenes.get(e)||null}getAllScenesDFS(){if(!this.root)return[];let e=[],t=[];for(t.push({scene:this.root,depth:0});t.length>0;){let{scene:o,depth:r}=t.pop();e.push({scene:o,depth:r});let n=[];for(let[c]of o.choices.entries()){let l=this.getScene(c);l&&n.push(l)}for(let c=n.length-1;c>=0;c--)t.push({scene:n[c],depth:r+1})}return e}toJSON(){let e={};for(let[t,o]of this.scenes.entries())e[t]=o.toJSON();return e}};var h=class{constructor(){throw new Error("Static class")}static async loadFromJson(e,t,o){if(!e||typeof e!="string")return null;let r=null;try{let c=await fetch(e);if(!c.ok)return null;r=await c.json()}catch{return null}if(!r||typeof r!="object")return null;let n=new o(t);for(let[c,l]of Object.entries(r)){let u=t.fromJson(c,l);if(u)n.addScene(u);else return console.warn(`Failed to load scene ${c}`),null}return n.scenes.size===0?null:(console.log("Story loaded from Json"),n)}static async saveToJson(e,t){if(!e||!t||typeof t!="string")return console.error("Ungültige Eingabeparameter in saveToJson: story = ",e,", filename = ",t),!1;let o=e.toJSON();try{await fetch(t,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(o)}),console.log("Story saved to Json")}catch(r){return console.error("Failed to save story to Json:"+r),!1}}};var i=new d(a);function p(s=document.getElementById("tree-output")){if(!s)return;if(!i||!i.root){s.textContent="(noch kein Baum erstellt)";return}let e=i.getAllScenesDFS(),t=[];for(let r=0;r<e.length;r++){let{scene:n,depth:c}=e[r],l="";for(let u=0;u<c;u++)l+=u===c-1?"|_ ":"   ";t.push(l+n.key)}let o=t.join(`
+`);s.textContent=o}function v(s=document.getElementById("choices-container")){let e=document.createElement("div");e.className="choice-inputs",e.innerHTML=`
+        <input type="text" class="choice-text" placeholder="Entscheidungstext">
+        <input type="text" class="choice-next" placeholder="Nächste Szene (Schlüssel)">
+      `,s.appendChild(e)}function C(){let s=document.getElementById("scene-key").value.trim(),e=document.getElementById("scene-text").value.trim();if(!s||!e)return alert("Bitte Schlüssel und Text ausfüllen.");let t=document.querySelectorAll(".choice-inputs"),o=new Map;t.forEach(l=>{let u=l.querySelector(".choice-text").value.trim(),m=l.querySelector(".choice-next").value.trim();u&&m&&o.set(m,u)}),i.addScene(new a(s,e,null,o)),g(),S(s),p(),document.getElementById("scene-key").value="",document.getElementById("scene-text").value="";let r=document.getElementById("choices-container");r.innerHTML=`<div class="choice-inputs">
+    <input type="text" class="choice-text" placeholder="Entscheidungstext">
+    <input type="text" class="choice-next" placeholder="Nächste Szene (Schlüssel)">
+  </div>`;let n=document.createElement("div");n.textContent=`✅ Szene '${s}' wurde gespeichert.`,n.style.backgroundColor="#dcfce7",n.style.border="1px solid #22c55e",n.style.color="#166534",n.style.padding="0.5rem 1rem",n.style.borderRadius="6px",n.style.marginTop="1rem",n.style.fontSize="0.95rem",document.querySelectorAll(".section")[0].appendChild(n),setTimeout(()=>n.remove(),3e3)}function g(){if(!i||i.scenes.size===0){document.getElementById("output").textContent="(noch keine Szenen erstellt)";return}document.getElementById("output").textContent=JSON.stringify(i.toJSON(),null,2)}function S(s){let e=i.getScene(s);if(!e)return;let t=`<p><strong>${e.key}</strong>: ${e.text}</p>`;for(let[o,r]of e.choices.entries())t+=`<button disabled>${r} -> ${o}</button><br>`;document.getElementById("preview").innerHTML=t}function y(){if(!i.root){alert("Keine 'start'-Szene gefunden.");return}w("start")}function w(s){let e=document.getElementById("play-area"),t=i.getScene(s);if(!t){e.innerHTML=`<p><em>Szene '${s}' nicht gefunden.</em></p>`;return}let o=`<p><strong>${t.key}</strong>: ${t.text}</p>`;for(let[r,n]of t.choices.entries())o+=`<button onclick="renderScene('${r}')">${n}</button><br>`;e.innerHTML=o}window.addChoiceField=v;window.addScene=C;window.startStory=y;window.renderTree=p;window.updateOutput=g;window.renderPreview=S;window.renderScene=w;var x=document.getElementById("json-file"),E=document.getElementById("import-json"),k=document.getElementById("export-json"),f=document.getElementById("import-status");window.currentStory=null;E.addEventListener("click",async()=>{if(!x.files.length){f.textContent="Bitte zuerst eine JSON-Datei auswählen.";return}let s=x.files[0],e=URL.createObjectURL(s);try{if(i=await h.loadFromJson(e,a,d),!i){f.textContent="Fehler beim Laden: Story konnte nicht geladen werden.";return}window.currentStory=i,document.getElementById("output").textContent=JSON.stringify(i.toJSON(),null,2),f.textContent=`"${s.name}" erfolgreich geladen (${i.scenes.size} Szenen).`,typeof p=="function"&&p(),typeof y=="function"&&y()}catch(t){f.textContent="Fehler beim Laden: "+t.message}finally{URL.revokeObjectURL(e)}});k.addEventListener("click",()=>{if(!window.currentStory){alert("Keine Story zum Exportieren vorhanden.");return}h.saveToJson(window.currentStory,"story_export.json")});})();</script>
+</body>
