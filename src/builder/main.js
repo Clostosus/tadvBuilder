@@ -68,7 +68,6 @@ function addScene()
     });
 
     story.addScene(new Scene(sceneKey, text, null, choices));
-    updateOutput();
     renderPreview(sceneKey);
     renderTree();
 
@@ -94,17 +93,6 @@ function addScene()
     const section = document.querySelectorAll('.section')[0];
     section.appendChild(notice);
     setTimeout(() => notice.remove(), 3000);
-}
-
-
-function updateOutput()
-{
-    if (!story || story.scenes.size === 0) {
-        document.getElementById('output').textContent = "(noch keine Szenen erstellt)";
-        return;
-    }
-
-    document.getElementById('output').textContent = JSON.stringify(story.toJSON(), null, 2);
 }
 
 function renderPreview(key)
@@ -148,7 +136,6 @@ window.addScene = addScene;
 window.startStory = startStory;
 window.renderTree = renderTree;
 // make helper functions available
-window.updateOutput = updateOutput;
 window.renderPreview = renderPreview;
 window.renderScene = renderScene;
 
