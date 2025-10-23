@@ -166,7 +166,6 @@ importBtn.addEventListener("click", async () => {
             return;
         }
         window.currentStory = story;
-        document.getElementById("output").textContent = JSON.stringify(story.toJSON(), null, 2);
         importStatus.textContent = `"${file.name}" erfolgreich geladen (${story.scenes.size} Szenen).`;
 
         if (typeof renderTree === "function") renderTree();
