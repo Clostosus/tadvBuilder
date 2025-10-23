@@ -31,6 +31,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      # Skip deployment if there are no changes in the dist directory
+      - name: Skip deploy if no changes in dist
+        run: |
+          if ! git diff --quiet dist; then
+            echo "Changes detected in dist folder, proceeding with deployment."
+          else
+            echo "No changes detected in dist folder. Skipping deployment."
+            exit 0
+          fi
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
