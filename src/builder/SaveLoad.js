@@ -58,17 +58,23 @@ export default class SaveLoad {
 
         const data = story.toJSON();
         try {
-            await fetch(filename, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
+            let jsonStory = JSON.stringify(data)
+            const fileBlob = new Blob([jsonStory], { type: 'text/json' });
+
+            // Create a temporary link element
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(fileBlob);
+            link.download = filename;
+            // Programmatically click the link to trigger the download
+            link.click();
+            // Clean up the URL object
+            URL.revokeObjectURL(link.href);
+
             console.log("Story saved to Json");
         }catch(e){
             console.error("Failed to save story to Json:" + e);
             return false;
         }
+        return true;
     }
 }
