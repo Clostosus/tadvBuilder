@@ -10,8 +10,17 @@ OUT_HTML="$DIST_DIR/storyBuilder.html"
 
 mkdir -p "$DIST_DIR"
 
+# check if esbuild is installed
+if ! command -v esbuild >/dev/null 2>&1
+then
+    echo "esbuild not found. Use apt install esbuild. Exiting."
+    exit 1
+fi
+
 # Move all js to a single file
-esbuild "$BUILDER_SRC_DIR/main.js" --bundle --minify --charset=utf8 --outfile="$BUNDLE_JS"
+esbuild "$BUILDER_SRC_DIR/main.js" \
+--bundle --minify --charset=utf8 --outfile="$BUNDLE_JS" \
+--format=esm --sourcemap --platform=browser
 
 # read css ,js and other html file contents
 CSS=$(<"$BUILDER_SRC_DIR/style.css")
