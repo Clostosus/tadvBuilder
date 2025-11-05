@@ -190,6 +190,36 @@ button:hover {
 &lt;head&gt;
     &lt;meta charset="UTF-8"&gt;
     &lt;title&gt;My Story-Viewer&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: system-ui, sans-serif;
+        }
+        h2 {
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+        }
+        #game {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0 auto;
+            max-width: 800px;
+            white-space: pre-wrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        #game button {
+            background-color: #3b82f6;
+            width: 100%;
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+    &lt;/style&gt;
 &lt;/head&gt;
 &lt;body&gt;
 &lt;div id="game"&gt;&lt;/div&gt;
@@ -204,13 +234,25 @@ button:hover {
     {
         const scene = story[key];
         if (!scene) return;
-        let html = `&lt;h2&gt;${key}&lt;/h2&gt;&lt;p&gt;${scene.text}&lt;/p&gt;`;
-        if (scene.choices !== undefined &amp;&amp; scene.choices.length !== 0) {
-            scene.choices.forEach(c =&gt; {
-                html += `&lt;button onclick='showScene("${c.next}")'&gt;${c.text}&lt;/button&gt;&lt;br&gt;`;
-            });
+
+        const container = document.getElementById('game');
+        container.innerHTML = ''; // delete previous content/scene
+
+        const title = document.createElement('h2');
+        title.textContent = key; container.appendChild(title);
+
+        const text = document.createElement('p');
+        text.textContent = scene.text; container.appendChild(text);
+
+        if (!scene.choices || scene.choices.length === 0) return;
+
+        for (const c of scene.choices) {
+            const button = document.createElement('button');
+            button.textContent = c.text;
+            button.addEventListener('click', () =&gt; showScene(c.next));
+            container.appendChild(button);
+            container.appendChild(document.createElement('br'));
         }
-        document.getElementById('game').innerHTML = html;
     }
 
     showScene("start");
