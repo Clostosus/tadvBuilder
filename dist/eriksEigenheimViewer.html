@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Story-Viewer</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+        }
+        h2 {
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+        }
+        #game {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0 auto;
+            max-width: 1000px;
+            white-space: pre-wrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        #game button {
+            background-color: #3b82f6;
+            width: 100%;
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+<div id="game"></div>
+
+<script>
+    const story = {
+        // INSERT JSON STORY HERE
+        "start": {
+        "text": "Erik hat endlich sein wohlverdientes Weihnachtsgeld erhalten und beschließt, es für ein paar lang gehegte Träume zu nutzen: ein neues Auto, ein gemütliches Eigenheim und ein gepflegter Garten.",
+            "choices": [
+            {
+                "text": "Haus kaufen",
+                "next": "trautesheim"
+            },
+            {
+                "text": "Auto kaufen",
+                "next": "autofahrt"
+            }
+        ]
+    },
+        "trautesheim": {
+        "text": "Er steht vor den Schlüsseln zu seinem brandneuen, noch leeren Haus. Die Wände sind kahl, das Licht fällt durch große Fenster - alles wartet darauf, von ihm mit Leben gefüllt zu werden.",
+            "choices": [
+            {
+                "text": "Sessel bauen",
+                "next": "sesselsitzen"
+            },
+            {
+                "text": "Kamin bauen",
+                "next": "kaminwärme"
+            },
+            {
+                "text": "Küche renovieren",
+                "next": "küchenrenovierung"
+            }
+        ]
+    },
+        "autofahrt": {
+        "text": "Mit dem frisch erworbenen Wagen schnürt Erik den Sicherheitsgurt, dreht den Schlüssel und lässt den Motor mit einem satten Brummen erwachen. Jetzt will er das Fahrzeug testen und eine kleine Spritztour starten.",
+            "choices": [
+            {
+                "text": "In die Berge fahren",
+                "next": "bergfahrt"
+            },
+            {
+                "text": "In Stadt fahren",
+                "next": "stadtfahrt"
+            }
+        ]
+    },
+        "sesselsitzen": {
+        "text": "Erik lehnt sich zufrieden in den neuen Sessel zurück. Der Geruch von frischem Holz umhüllt ihn. Es ist der perfekte Ort für entspannte Abende und unvergessliche Gespräche."
+    },
+        "kaminwärme": {
+        "text": "Das Feuer knistert sanft im neu gebauten Kamin. Erik fühlt sich geborgen und weiß, dass dies der Mittelpunkt seines zukünftigen Lebens wird, wohin Familie und Freunde gerne kommen werden."
+    },
+        "küchenrenovierung": {
+        "text": "Die moderne Küche erstrahlt nun in hellem Glanz. Erik kann es kaum erwarten, die ersten gemeinsamen Mahlzeiten mit Freunden und Familie zu kochen und zu genießen."
+    },
+        "bergfahrt": {
+        "text": "Die Frischluft erfüllt Eriks Lungen, während er die kurvenreiche Straße in die Berge hinauffährt. Der Ausblick ist atemberaubend und bringt ein Lächeln auf sein Gesicht: Freiheit leicht gemacht."
+    },
+        "stadtfahrt": {
+        "text": "Erik cruist durch die pulsierenden Straßen der Stadt. Die Lichter blitzen und es gibt so viel zu entdecken. Freude und Aufregung erfüllen ihn, als er in seine neue Freiheit eintaucht."
+    }
+    };
+
+    function showScene(key)
+    {
+        const scene = story[key];
+        if (!scene) return;
+
+        const container = document.getElementById('game');
+        container.innerHTML = ''; // delete previous content/scene
+
+        const title = document.createElement('h2');
+        title.textContent = key; container.appendChild(title);
+
+        const text = document.createElement('p');
+        text.textContent = scene.text; container.appendChild(text);
+
+        if (!scene.choices || scene.choices.length === 0) return;
+
+        for (const c of scene.choices) {
+            const button = document.createElement('button');
+            button.textContent = c.text;
+            button.addEventListener('click', () => showScene(c.next));
+            container.appendChild(button);
+            container.appendChild(document.createElement('br'));
+        }
+    }
+
+    showScene("start");
+</script>
+</body>
+</html>
