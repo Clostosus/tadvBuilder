@@ -6,10 +6,11 @@ import SaveLoad from "./SaveLoad.js";
 let story = new Story(Scene);
 
 /**
- * Renders the story tree as a string.
- * @returns void
+ * Generates the story tree as an ASCII-style string.
+ * Marks missing (unresolved) scenes explicitly.
+ * @param {HTMLElement} parentElement Element inside which the output will be inserted.
  */
-function renderTree(parentElement = document.getElementById('tree-output'))
+function generateTreeAscii(parentElement = document.getElementById('tree-output'))
 {
     if (!parentElement) return;
     if (!story || !story.root) {
@@ -21,14 +22,20 @@ function renderTree(parentElement = document.getElementById('tree-output'))
     const outputLines = [];
 
     for (let i = 0; i < scenesWithDepth.length; i++) {
-        const { scene, depth } = scenesWithDepth[i];
+        let { key, scene, depth } = scenesWithDepth[i];
 
+        // Tree-prefix (Indentation with ASCII)
         let prefix = '';
         for (let d = 0; d < depth; d++) {
             prefix += (d === depth - 1) ? '|_ ' : '   ';
         }
+        key = String(key); // ensure its string
 
-        outputLines.push(prefix + scene.key);
+        if (scene === null) {
+            outputLines.push(prefix + '[' + key + ']' + "(MISSING)");
+        } else {
+            outputLines.push(prefix + key);
+        }
     }
     const output =  outputLines.join('\n');
     parentElement.textContent = output;
@@ -69,7 +76,7 @@ function addScene()
 
     story.addScene(new Scene(sceneKey, text, null, choices));
     renderPreview(sceneKey);
-    renderTree();
+    generateTreeAscii();
 
     // Eingabefelder leeren
     document.getElementById('scene-key').value = "";
@@ -134,7 +141,7 @@ function renderScene(key)
 window.addChoiceField = addChoiceField;
 window.addScene = addScene;
 window.startStory = startStory;
-window.renderTree = renderTree;
+window.renderTree = generateTreeAscii;
 // make helper functions available
 window.renderPreview = renderPreview;
 window.renderScene = renderScene;
@@ -168,7 +175,7 @@ importBtn.addEventListener("click", async () => {
         window.currentStory = story;
         importStatus.textContent = `"${file.name}" erfolgreich geladen (${story.scenes.size} Szenen).`;
 
-        if (typeof renderTree === "function") renderTree();
+        if (typeof generateTreeAscii === "function") generateTreeAscii();
         if (typeof startStory === "function") startStory();
     } catch (err) {
         importStatus.textContent = "Fehler beim Laden: " + err.message;

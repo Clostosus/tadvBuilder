@@ -73,26 +73,39 @@ export default class Story {
     getScene(key) { return this.scenes.get(key) || null; }
 
     /**
-     * Retrieves all scenes as array of scene objects. Array is in depth-first order.
-     * Returns an array of objects containing the Scene instance and its depth in the story tree.
-     * @returns {Array<{ scene: Scene, depth: number }>}
+     * Retrieves all scene references as array in depth-first order.
+     * Returns objects containing scene key, optional Scene instance, and depth.
+     * @returns {Array<SceneRef>}
      */
     getAllScenesDFS()
     {
         if (!this.root) return [];
+        /** @type {Array<SceneRef>} */
         const result = [];
         const stack = [];
         stack.push({ scene: this.root, depth: 0 });
 
+        const visited = new Set();
+
         while (stack.length > 0) {
             const { scene, depth } = stack.pop();
-            result.push({ scene, depth });
+
+            if(visited.has(scene.key)){ continue; }
+            visited.add(scene.key);
+            result.push({ key: scene.key, scene: scene,depth: depth });
 
             const children = [];
             for (const [next] of scene.choices.entries()) {
                 const child = this.getScene(next);
                 if (child) {
                     children.push(child);
+                }else {
+                    // Add missing referenced scene explicitly
+                    result.push({
+                        key: next,
+                        scene: null,
+                        depth: depth + 1
+                    });
                 }
             }
             // reverse order to get initial order

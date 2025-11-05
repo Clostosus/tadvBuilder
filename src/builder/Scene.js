@@ -131,3 +131,10 @@ export default class Scene {
         return { text: this.text, choices: choicesArray };
     }
 }
+
+/**
+ * @typedef {Object} SceneRef
+ * @property {Scene|null} scene - The referenced Scene instance, or null if missing.
+ * @property {string} key - The scene key (ID)
+ * @property {number} depth - Depth in the DFS traversal of the story tree, starting at 0 for the root scene.
+ */
