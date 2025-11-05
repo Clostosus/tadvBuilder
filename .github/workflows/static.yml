@@ -34,7 +34,8 @@ jobs:
       - name: Check for changes in dist
         id: check_changes
         run: |
-          if git diff --quiet dist; then
+          # Check, if current and previous commit differ in dist folder
+          if  git diff --quiet HEAD^..HEAD -- dist; then
             echo "no_changes=true" >> $GITHUB_OUTPUT
             echo "No changes detected in dist folder. Skipping deployment."
           else
