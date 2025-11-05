@@ -1,4 +1,4 @@
-# Simple workflow for deploying static content to GitHub Pages
+# Workflow for deploying static content to GitHub Pages
 name: Deploy static content to Pages
 
 on:
@@ -22,7 +22,6 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
   deploy:
     environment:
       name: github-pages
@@ -31,22 +30,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      # Skip deployment if there are no changes in the dist directory
-      - name: Skip deploy if no changes in dist
+      # Check if there are changes in the dist directory
+      - name: Check for changes in dist
+        id: check_changes
         run: |
-          if ! git diff --quiet dist; then
-            echo "Changes detected in dist folder, proceeding with deployment."
-          else
+          if git diff --quiet dist; then
+            echo "no_changes=true" >> $GITHUB_OUTPUT
             echo "No changes detected in dist folder. Skipping deployment."
-            exit 0
+          else
+            echo "no_changes=false" >> $GITHUB_OUTPUT
+            echo "Changes detected in dist folder, proceeding with deployment."
           fi
       - name: Setup Pages
+        if: steps.check_changes.outputs.no_changes == 'false'
         uses: actions/configure-pages@v5
       - name: Upload artifact
+        if: steps.check_changes.outputs.no_changes == 'false'
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload entire repository
           path: 'dist/'
       - name: Deploy to GitHub Pages
+        if: steps.check_changes.outputs.no_changes == 'false'
         id: deployment
         uses: actions/deploy-pages@v4
