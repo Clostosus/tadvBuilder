@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>My Story-Viewer</title>
+    <title>Story-Viewer</title>
     <style>
         body {
             font-family: system-ui, sans-serif;
@@ -48,23 +48,23 @@
         const scene = story[key];
         if (!scene) return;
 
-        const container = document.getElementById('game');
-        container.innerHTML = ''; // delete previous content/scene
+        const container = document.getElementById("game");
+        container.innerHTML = ""; // delete previous content/scene
 
-        const title = document.createElement('h2');
+        const title = document.createElement("h2");
         title.textContent = key; container.appendChild(title);
 
-        const text = document.createElement('p');
+        const text = document.createElement("p");
         text.textContent = scene.text; container.appendChild(text);
 
         if (!scene.choices || scene.choices.length === 0) return;
 
         for (const c of scene.choices) {
-            const button = document.createElement('button');
+            const button = document.createElement("button");
             button.textContent = c.text;
-            button.addEventListener('click', () => showScene(c.next));
+            button.addEventListener("click", () => showScene(c.next));
             container.appendChild(button);
-            container.appendChild(document.createElement('br'));
+            container.appendChild(document.createElement("br"));
         }
     }
 
