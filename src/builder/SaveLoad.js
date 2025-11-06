@@ -6,8 +6,8 @@ export default class SaveLoad {
     /**
      * Builds the story tree from plain JSON text.
      * @param {string} filename
-     * @param {Object} SceneClass
-     * @param {Object} StoryClass
+     * @param {Class} SceneClass
+     * @param {Class} StoryClass
      * @returns {Story | null | Promise<string>} Returns new story,null deserialization fails, or Promise<string> if loading fails.
      */
     static async loadFromJson(filename,SceneClass, StoryClass)
@@ -25,22 +25,12 @@ export default class SaveLoad {
         } catch (e) {
             return null;
         }
-        if (!data || typeof data !== 'object') { return null; }
 
-        const story = new StoryClass(SceneClass);
-
-        for (const [key, value] of Object.entries(data)) {
-            const scene = SceneClass.fromJson(key, value);
-            if (scene) {
-                story.addScene(scene);
-            }else{
-                console.warn(`Failed to load scene ${key}`);
-                return null;
-            }
+        if (typeof StoryClass.fromJson !== 'function') {
+            console.warn('StoryClass has no method called: fromJson');
+            return null;
         }
-        if (story.scenes.size === 0) { return null; }
-        console.log("Story loaded from Json");
-        return story;
+        return StoryClass.fromJson(data,SceneClass);
     }
 
     /**

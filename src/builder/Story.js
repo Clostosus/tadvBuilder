@@ -5,7 +5,8 @@
  */
 export default class Story {
     /**
-     * @param {Class} sceneClass - Class representing a Scene object.
+     * @constructor
+     * @param {Class} sceneClass - Class representing a Scene.
      */
     constructor(sceneClass)
     {
@@ -117,7 +118,6 @@ export default class Story {
     }
 
 
-
     /**
      * Converts the entire story into a JSON-compatible structure.
      * Each scene key maps to an object with `text` and `choices` array.
@@ -130,5 +130,35 @@ export default class Story {
             result[key] = scene.toJSON();
         }
         return result;
+    }
+
+    /**
+     * Creates a new Story instance from a JSON Object.
+     * @param {Object} parsedJson
+     * @param {Class} SceneClass
+     * @returns {Story | null} New Scene instance or null if parsing fails.
+     */
+    static fromJson(parsedJson, SceneClass) {
+        if (!parsedJson || typeof parsedJson !== 'object') { return null; }
+        if (typeof SceneClass.fromJson !== 'function') {
+            console.warn('SceneClass has no method called: fromJson');
+            return null;
+        }
+
+        let story = new Story(SceneClass);
+        for (const [key, value] of Object.entries(parsedJson)) {
+            const scene = SceneClass.fromJson(key, value);
+            if (scene) {
+                story.addScene(scene);
+            }else{
+                console.warn(`Failed to load scene ${key}`);
+                return null;
+            }
+        }
+        if (story.scenes.size === 0) {
+            console.warn('No scenes found in JSON');
+            return null;
+        }
+        return story;
     }
 }

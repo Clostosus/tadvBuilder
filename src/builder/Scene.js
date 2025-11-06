@@ -73,7 +73,7 @@ export default class Scene {
 
     /**
      * Creates a new Scene instance from a JSON text.
-     * @returns {Scene} New Scene instance or null if parsing fails.
+     * @returns {Scene | null} New Scene instance or null if parsing fails.
      * @param {string} key
      * @param {object|string} json
      */
