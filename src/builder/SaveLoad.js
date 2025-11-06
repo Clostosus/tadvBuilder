@@ -109,5 +109,6 @@ export default class SaveLoad {
             console.error("Failed to save story to Json:" + e);
             return false;
         }
+        return true;
     }
 }
