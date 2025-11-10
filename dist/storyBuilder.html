@@ -166,7 +166,7 @@ button:hover {
     <h2><span class="emoji">🧭</span>Entscheidungsbaum (ASCII-Übersicht)</h2>
     <p class="help">Diese einfache Textdarstellung zeigt, welche Szene zu welcher führt. Sie wird automatisch aus deinem Story-Aufbau generiert.</p>
     <pre id="tree-output">(noch kein Baum erstellt)</pre>
-    <button onclick="renderTree()">Entscheidungsbaum aktualisieren</button>
+    <button onclick="generateTreeAscii()">Entscheidungsbaum aktualisieren</button>
 </div>
 
 <div class="section">
@@ -180,86 +180,6 @@ button:hover {
     <button id="export-html">Exportieren als HTML</button>
 
     <pre id="import-status">(kein Import durchgeführt)</pre>
-</div>
-
-<div class="section">
-<p class="help">Du kannst dein JSON in dieses Template einsetzen, um eine Wiedergabeseite zu erstellen:</p>
-<pre id="storyViewerTemplate">
-&lt;!DOCTYPE html&gt;
-&lt;html lang="de"&gt;
-&lt;head&gt;
-    &lt;meta charset="UTF-8"&gt;
-    &lt;title&gt;Story-Viewer&lt;/title&gt;
-    &lt;style&gt;
-        body {
-            font-family: system-ui, sans-serif;
-        }
-        h2 {
-            color: #0f172a;
-            margin-bottom: 0.25rem;
-        }
-        #game {
-            background: #f1f5f9;
-            border: 1px solid #cbd5e1;
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 0 auto;
-            max-width: 800px;
-            white-space: pre-wrap;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-        }
-        #game button {
-            background-color: #3b82f6;
-            width: 100%;
-            color: white;
-            border: none;
-            padding: 0.6rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 0.5rem;
-            font-weight: 500;
-        }
-    &lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;div id="game"&gt;&lt;/div&gt;
-
-&lt;script&gt;
-    const story = {
-        // INSERT JSON STORY HERE
-
-    };
-
-    function showScene(key)
-    {
-        const scene = story[key];
-        if (!scene) return;
-
-        const container = document.getElementById("game");
-        container.innerHTML = ""; // delete previous content/scene
-
-        const title = document.createElement("h2");
-        title.textContent = key; container.appendChild(title);
-
-        const text = document.createElement("p");
-        text.textContent = scene.text; container.appendChild(text);
-
-        if (!scene.choices || scene.choices.length === 0) return;
-
-        for (const c of scene.choices) {
-            const button = document.createElement("button");
-            button.textContent = c.text;
-            button.addEventListener("click", () =&gt; showScene(c.next));
-            container.appendChild(button);
-            container.appendChild(document.createElement("br"));
-        }
-    }
-
-    showScene("start");
-&lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</pre>
 </div>
 
 <script>var I=class{constructor(e,t="",o=null,r=null){if(this.key=e,this.text=t,this.parent=o,this.choices=new Map,r instanceof Map)for(let[n,s]of r)this.choices.set(n,s);else if(Array.isArray(r))for(let n of r)n.next&&n.text&&this.choices.set(n.next,n.text)}addChoice(e,t){return this.choices.has(t)?!1:(this.choices.set(t,e),!0)}updateChoice(e,t){return this.choices.has(e)?(this.choices.set(e,t),!0):!1}removeChoice(e){return this.choices.delete(e)}getAllChoices(){return Array.from(this.choices,([e,t])=>({text:t,next:e}))}static fromJson(e,t){if(!e||!t)return null;let o=null;if(typeof t=="string")try{o=JSON.parse(t)}catch(n){return console.error(`Failed to parse JSON for scene ${e}: ${n}`),null}else if(typeof t=="object")o=t;else return console.error(`Failed to parse JSON for scene ${e}: Invalid JSON type`),null;if(!o.text||typeof o.text!="string")return console.error(`Scene ${e} missing text property.`),null;let r=new I(e,o.text,null,[]);if(Array.isArray(o.choices))for(let n of o.choices)!n||typeof n.text!="string"||typeof n.next!="string"||r.addChoice(n.text,n.next);return r}toJSON(){let e=[];for(let[t,o]of this.choices.entries())e.push({text:o,next:t});return e.length===0?{text:this.text}:{text:this.text,choices:e}}};var u=class{constructor(e){this.sceneClass=e,this.scenes=new Map,this.root=null}addScene(e){if(!(e instanceof this.sceneClass)||this.scenes.has(e.key))return!1;if(this.scenes.set(e.key,e),!this.root)return this.root=e,!0;if(!e.parent&&this.root&&this.scenes.size>0){let t=this.findParent(e.key);t?(e.parent=t,t.addChoice(e.text||`to ${e.key}`,e.key)):(this.root.addChoice(e.text||`to ${e.key}`,e.key),e.parent=this.root)}return e.parent&&this.scenes.has(e.parent.key)&&this.scenes.get(e.parent.key).addChoice(e.text||`to ${e.key}`,e.key),!0}findParent(e){for(let t of this.scenes.values())if(t.choices instanceof Map&&t.choices.has(e))return t;return null}getScene(e){return this.scenes.get(e)||null}getScenesDFS(e=this.root){if(!e)return[];let t=[],o=[],r=new Set;for(;o.length>0;){let{scene:n,depth:s}=o.pop();if(r.has(n.key))continue;r.add(n.key),t.push({key:n.key,scene:n,depth:s});let g=[];for(let[i]of n.choices.entries()){let l=this.getScene(i);l?g.push(l):t.push({key:i,scene:null,depth:s+1})}for(let i=g.length-1;i>=0;i--)o.push({scene:g[i],depth:s+1})}return t}editSceneContent(e,t,o){let r=this.scenes.get(e);if(!r)return console.warn(`Scene ${e} not found`),!1;if(t&&(r.text=t),o)for(let[n,s]of o.entries())r.updateChoice(n,s)}removeScene(e){let t=this.scenes.get(e);if(!t)return console.warn(`Scene ${e} not found`),!1;t.parent&&t.parent.removeChoice(t.key);let o=this.getScenesDFS(t);for(let r=o.length-1;r>=0;r--){let{key:n}=o[r];this.scenes.delete(n)}return!0}toJSON(){let e={};for(let[t,o]of this.scenes.entries())e[t]=o.toJSON();return e}static fromJson(e,t){if(!e||typeof e!="object")return null;if(typeof t.fromJson!="function")return console.warn("SceneClass has no method called: fromJson"),null;let o=new u(t);for(let[r,n]of Object.entries(e)){let s=t.fromJson(r,n);if(s)o.addScene(s);else return console.warn(`Failed to load scene ${r}`),null}return o.scenes.size===0?(console.warn("No scenes found in JSON"),null):o}};var a=class{constructor(){throw new Error("Static class")}static async loadFromJson(e,t,o){if(!e||typeof e!="string")return null;let r=null;try{let n=await fetch(e);if(!n.ok)return null;r=await n.json()}catch{return null}return typeof o.fromJson!="function"?(console.warn("StoryClass has no method called: fromJson"),null):o.fromJson(r,t)}static async saveToJson(e,t){if(!e||!t||typeof t!="string")return console.error("Ungültige Eingabeparameter in saveToJson: story = ",e,", filename = ",t),!1;let o=e.toJSON();try{let r=JSON.stringify(o),n=new Blob([r],{type:"text/json"}),s=document.createElement("a");s.href=URL.createObjectURL(n),s.download=t,s.click(),URL.revokeObjectURL(s.href),console.log("Story saved to Json")}catch(r){return console.error("Failed to save story to Json:"+r),!1}return!0}static async saveToHtml(e,t){if(!e||!t||typeof t!="string")return console.error("Ungültige Eingabeparameter in saveToHtml: story = ",e,", filename = ",t),!1;let o="PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImRlIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+U3RvcnktVmlld2VyPC90aXRsZT4KICAgIDxzdHlsZT4KICAgICAgICBib2R5IHsKICAgICAgICAgICAgZm9udC1mYW1pbHk6IHN5c3RlbS11aSwgc2Fucy1zZXJpZjsKICAgICAgICB9CiAgICAgICAgaDIgewogICAgICAgICAgICBjb2xvcjogIzBmMTcyYTsKICAgICAgICAgICAgbWFyZ2luLWJvdHRvbTogMC4yNXJlbTsKICAgICAgICB9CiAgICAgICAgI2dhbWUgewogICAgICAgICAgICBiYWNrZ3JvdW5kOiAjZjFmNWY5OwogICAgICAgICAgICBib3JkZXI6IDFweCBzb2xpZCAjY2JkNWUxOwogICAgICAgICAgICBwYWRkaW5nOiAxcmVtOwogICAgICAgICAgICBib3JkZXItcmFkaXVzOiA4cHg7CiAgICAgICAgICAgIG1hcmdpbjogMCBhdXRvOwogICAgICAgICAgICBtYXgtd2lkdGg6IDgwMHB4OwogICAgICAgICAgICB3aGl0ZS1zcGFjZTogcHJlLXdyYXA7CiAgICAgICAgICAgIGJveC1zaGFkb3c6IDAgNHB4IDEycHggcmdiYSgwLDAsMCwwLjA2KTsKICAgICAgICB9CiAgICAgICAgI2dhbWUgYnV0dG9uIHsKICAgICAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogIzNiODJmNjsKICAgICAgICAgICAgd2lkdGg6IDEwMCU7CiAgICAgICAgICAgIGNvbG9yOiB3aGl0ZTsKICAgICAgICAgICAgYm9yZGVyOiBub25lOwogICAgICAgICAgICBwYWRkaW5nOiAwLjZyZW0gMXJlbTsKICAgICAgICAgICAgYm9yZGVyLXJhZGl1czogNnB4OwogICAgICAgICAgICBjdXJzb3I6IHBvaW50ZXI7CiAgICAgICAgICAgIG1hcmdpbi10b3A6IDAuNXJlbTsKICAgICAgICAgICAgZm9udC13ZWlnaHQ6IDUwMDsKICAgICAgICB9CiAgICA8L3N0eWxlPgo8L2hlYWQ+Cjxib2R5Pgo8ZGl2IGlkPSJnYW1lIj48L2Rpdj4KCjxzY3JpcHQ+CiAgICBjb25zdCBzdG9yeSA9IHsKICAgICAgICAvLyBJTlNFUlQgSlNPTiBTVE9SWSBIRVJFCg==",r="ICAgIH07CgogICAgZnVuY3Rpb24gc2hvd1NjZW5lKGtleSkKICAgIHsKICAgICAgICBjb25zdCBzY2VuZSA9IHN0b3J5W2tleV07CiAgICAgICAgaWYgKCFzY2VuZSkgcmV0dXJuOwoKICAgICAgICBjb25zdCBjb250YWluZXIgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgiZ2FtZSIpOwogICAgICAgIGNvbnRhaW5lci5pbm5lckhUTUwgPSAiIjsgLy8gZGVsZXRlIHByZXZpb3VzIGNvbnRlbnQvc2NlbmUKCiAgICAgICAgY29uc3QgdGl0bGUgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCJoMiIpOwogICAgICAgIHRpdGxlLnRleHRDb250ZW50ID0ga2V5OyBjb250YWluZXIuYXBwZW5kQ2hpbGQodGl0bGUpOwoKICAgICAgICBjb25zdCB0ZXh0ID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgicCIpOwogICAgICAgIHRleHQudGV4dENvbnRlbnQgPSBzY2VuZS50ZXh0OyBjb250YWluZXIuYXBwZW5kQ2hpbGQodGV4dCk7CgogICAgICAgIGlmICghc2NlbmUuY2hvaWNlcyB8fCBzY2VuZS5jaG9pY2VzLmxlbmd0aCA9PT0gMCkgcmV0dXJuOwoKICAgICAgICBmb3IgKGNvbnN0IGMgb2Ygc2NlbmUuY2hvaWNlcykgewogICAgICAgICAgICBjb25zdCBidXR0b24gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCJidXR0b24iKTsKICAgICAgICAgICAgYnV0dG9uLnRleHRDb250ZW50ID0gYy50ZXh0OwogICAgICAgICAgICBidXR0b24uYWRkRXZlbnRMaXN0ZW5lcigiY2xpY2siLCAoKSA9PiBzaG93U2NlbmUoYy5uZXh0KSk7CiAgICAgICAgICAgIGNvbnRhaW5lci5hcHBlbmRDaGlsZChidXR0b24pOwogICAgICAgICAgICBjb250YWluZXIuYXBwZW5kQ2hpbGQoZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgiYnIiKSk7CiAgICAgICAgfQogICAgfQoKICAgIHNob3dTY2VuZSgic3RhcnQiKTsKPC9zY3JpcHQ+CjwvYm9keT4KPC9odG1sPg==",n=e.toJSON(),s=JSON.stringify(n);s=s.slice(1,-1);try{let g=window.atob(o)+s+window.atob(r),i=new Blob([g],{type:"text/html"}),l=document.createElement("a");l.href=URL.createObjectURL(i),l.download=t,l.click(),URL.revokeObjectURL(l.href),console.log("Story saved to Html")}catch(g){return console.error("Failed to save story to Json:"+g),!1}return!0}};var C=new u(I);function h(c=document.getElementById("tree-output")){if(!c)return;if(!C||!C.root){c.textContent="(noch kein Baum erstellt)";return}let e=C.getScenesDFS(),t=[];for(let r=0;r<e.length;r++){let{key:n,scene:s,depth:g}=e[r],i="";for(let l=0;l<g;l++)i+=l===g-1?"|_ ":"   ";n=String(n),s===null?t.push(i+"["+n+"](MISSING)"):t.push(i+n)}let o=t.join(`
