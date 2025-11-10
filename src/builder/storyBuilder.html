@@ -33,6 +33,8 @@
     </div>
     <button onclick="addChoiceField()">Weitere Entscheidung hinzufügen</button>
     <button onclick="addScene()">Szene speichern</button>
+    <button onclick="removeScene()">Szene löschen</button>
+    <pre id="scene-status">(noch keine Aktion durchgeführt)</pre>
 </div>
 
 <div class="section">
@@ -51,7 +53,7 @@
     <h2><span class="emoji">🧭</span>Entscheidungsbaum (ASCII-Übersicht)</h2>
     <p class="help">Diese einfache Textdarstellung zeigt, welche Szene zu welcher führt. Sie wird automatisch aus deinem Story-Aufbau generiert.</p>
     <pre id="tree-output">(noch kein Baum erstellt)</pre>
-    <button onclick="generateTreeAscii()">Entscheidungsbaum aktualisieren</button>
+    <button id="btnAsciiTreeRefresh">Entscheidungsbaum aktualisieren</button>
 </div>
 
 <div class="section">

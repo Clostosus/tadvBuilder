@@ -20,8 +20,6 @@ function generateTreeAscii(parentElement = document.getElementById('tree-output'
 
     const scenesWithDepth = story.getScenesDFS(story.root);
     const outputLines = [];
-    console.log("Tree ASCII generation started");
-    console.log("Scenes with depth:", scenesWithDepth);
     for (let i = 0; i < scenesWithDepth.length; i++) {
         let { key, scene, depth } = scenesWithDepth[i];
 
@@ -40,8 +38,6 @@ function generateTreeAscii(parentElement = document.getElementById('tree-output'
     }
     const output =  outputLines.join('\n');
     parentElement.textContent = output;
-
-    console.log("Tree ASCII generated");
 }
 
 /**
@@ -140,14 +136,48 @@ function renderScene(key)
     area.innerHTML = html;
 }
 
+function removeScene(){
+    const keyInput = document.getElementById("scene-key");
+    const key = keyInput.value.trim();
+    const status = document.getElementById("scene-status");
+
+    if (!key) {
+        status.textContent = "Bitte gib den Schlüssel der zu löschenden Szene ein.";
+        status.style.color = "red";
+        return;
+    }
+    if(! confirm(`Soll die Szene "${key}" wirklich gelöscht werden?`)){
+        return;
+    }
+    const success = story.removeScene(key);
+    if(! success){
+        status.textContent = `Keine Szene mit dem Schlüssel "${key}" gefunden.`;
+        status.style.color = "orange";
+        return;
+    }
+    status.textContent = `Szene "${key}" wurde erfolgreich gelöscht.`;
+    status.style.color = "green";
+    keyInput.value = "";
+    document.getElementById("scene-text").value = "";
+    generateTreeAscii();
+}
+
 // make functions available to HTML file
 window.addChoiceField = addChoiceField;
 window.addScene = addScene;
 window.startStory = startStory;
-window.renderTree = generateTreeAscii;
 // make helper functions available
 window.renderPreview = renderPreview;
 window.renderScene = renderScene;
+window.removeScene = removeScene;
+
+// Register functions
+window.addEventListener("DOMContentLoaded", (event) => {
+    console.log("page is fully loaded");
+    document.getElementById("btnAsciiTreeRefresh").addEventListener("click", () => {
+        generateTreeAscii();  // ruft sie ohne Event-Argument auf
+    });
+});
 
 // === JSON Import/Export GUI ===
 
