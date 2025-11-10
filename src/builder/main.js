@@ -18,7 +18,7 @@ function generateTreeAscii(parentElement = document.getElementById('tree-output'
         return;
     }
 
-    const scenesWithDepth = story.getAllScenesDFS();
+    const scenesWithDepth = story.getScenesDFS();
     const outputLines = [];
 
     for (let i = 0; i < scenesWithDepth.length; i++) {
@@ -150,7 +150,8 @@ window.renderScene = renderScene;
 
 const fileInput = document.getElementById("json-file");
 const importBtn = document.getElementById("import-json");
-const exportBtn = document.getElementById("export-json");
+const exportToJsonButton = document.getElementById("export-json");
+const exportToHtmlButton = document.getElementById("export-html");
 const importStatus = document.getElementById("import-status");
 
 // Reference to the current story object
@@ -185,10 +186,18 @@ importBtn.addEventListener("click", async () => {
 });
 
 // --- EXPORT ---
-exportBtn.addEventListener("click", () => {
+exportToJsonButton.addEventListener("click", () => {
     if (!window.currentStory) {
         alert("Keine Story zum Exportieren vorhanden.");
         return;
     }
-    SaveLoad.saveToJson(window.currentStory, "story_export.json");
+    SaveLoad.saveToJson(window.currentStory, "story.json");
+});
+
+exportToHtmlButton.addEventListener("click", () => {
+    if (!window.currentStory) {
+        alert("Keine Story zum Exportieren vorhanden.");
+        return;
+    }
+    SaveLoad.saveToHtml(window.currentStory, "story.html");
 });

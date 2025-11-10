@@ -74,18 +74,17 @@ export default class Story {
     getScene(key) { return this.scenes.get(key) || null; }
 
     /**
-     * Retrieves all scene references as array in depth-first order.
-     * Returns objects containing scene key, optional Scene instance, and depth.
-     * @returns {Array<SceneRef>}
+     * Retrieves all scene references below start scene as array in depth-first order.
+     * starting from the given scene (defaults to root).
+     * @param {Scene} [startScene=this.root]
+     * @returns {Array<SceneRef>} Array of { key, scene, depth }
      */
-    getAllScenesDFS()
+    getScenesDFS(startScene = this.root)
     {
-        if (!this.root) return [];
+        if (!startScene) return [];
         /** @type {Array<SceneRef>} */
         const result = [];
         const stack = [];
-        stack.push({ scene: this.root, depth: 0 });
-
         const visited = new Set();
 
         while (stack.length > 0) {
@@ -101,14 +100,10 @@ export default class Story {
                 if (child) {
                     children.push(child);
                 }else {
-                    // Add missing referenced scene explicitly
-                    result.push({
-                        key: next,
-                        scene: null,
-                        depth: depth + 1
-                    });
+                    result.push({key: next,scene: null,depth: depth + 1});
                 }
             }
+
             // reverse order to get initial order
             for (let i = children.length - 1; i >= 0; i--) {
                 stack.push({ scene: children[i], depth: depth + 1 });
@@ -117,6 +112,55 @@ export default class Story {
         return result;
     }
 
+    /* Content means the story text of the scene itself, and the description texts of the choices in this scene.
+     * @param {string} key
+     * @param {string} storyText
+     * @param {Map<string,string>} choiceTexts
+     * @return {boolean} true if content was edited, false if not found
+     */
+    editSceneContent(key, storyText, choiceTexts)
+    {
+        let scene = this.scenes.get(key);
+        if(!scene){
+            console.warn(`Scene ${key} not found`);
+            return false;
+        }
+        if(storyText){
+            scene.text = storyText;
+        }
+        if(choiceTexts){
+            for (const [next, text] of choiceTexts.entries()) {
+                scene.updateChoice(next, text);
+            }
+        }
+    }
+
+    /**
+     * Deletes a scene by key. Also deletes parent scene choices referencing this scene
+     * and recursively removes child scenes of this scene.
+     * @param {string} key
+     * @returns {boolean} True if found and deleted, else False
+     */
+    removeScene(key){
+        const scene = this.scenes.get(key);
+        if(!scene){
+            console.warn(`Scene ${key} not found`);
+            return false;
+        }
+
+        if(scene.parent){ scene.parent.removeChoice(scene.key); }
+
+        // Get all scenes below this scene (inclusive this one)
+        const allScenesBelow = this.getScenesDFS(scene);
+
+        // in dfs order, parents come before children
+        // To be sure that child scenes are removed before parent, we use a reverse loop:
+        for (let i = allScenesBelow.length - 1; i >= 0; i--) {
+            const { key } = allScenesBelow[i];
+            this.scenes.delete(key);
+        }
+        return true;
+    }
 
     /**
      * Converts the entire story into a JSON-compatible structure.
