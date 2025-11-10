@@ -18,9 +18,10 @@ function generateTreeAscii(parentElement = document.getElementById('tree-output'
         return;
     }
 
-    const scenesWithDepth = story.getScenesDFS();
+    const scenesWithDepth = story.getScenesDFS(story.root);
     const outputLines = [];
-
+    console.log("Tree ASCII generation started");
+    console.log("Scenes with depth:", scenesWithDepth);
     for (let i = 0; i < scenesWithDepth.length; i++) {
         let { key, scene, depth } = scenesWithDepth[i];
 
@@ -39,6 +40,8 @@ function generateTreeAscii(parentElement = document.getElementById('tree-output'
     }
     const output =  outputLines.join('\n');
     parentElement.textContent = output;
+
+    console.log("Tree ASCII generated");
 }
 
 /**

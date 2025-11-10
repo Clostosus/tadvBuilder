@@ -74,6 +74,23 @@ export default class Story {
     getScene(key) { return this.scenes.get(key) || null; }
 
     /**
+     * Depth of a scene relative to the root scene.
+     * @param {Scene} scene key of the scene
+     * @returns {number} depth of the scene, -1 if scene not found
+     */
+    getSceneDepth(scene) {
+        if(! this.scenes.has(scene.key)){ return -1; }
+
+        let depth = 0;
+        let current = scene;
+        while (current && current.parent) {
+            depth++;
+            current = current.parent;
+        }
+        return depth;
+    }
+
+    /**
      * Retrieves all scene references below start scene as array in depth-first order.
      * starting from the given scene (defaults to root).
      * @param {Scene} [startScene=this.root]
@@ -86,6 +103,12 @@ export default class Story {
         const result = [];
         const stack = [];
         const visited = new Set();
+
+        let baseDepth = 0;
+        if (startScene !== this.root) {
+            baseDepth = this.getSceneDepth(startScene);
+        }
+        stack.push({ scene: startScene, depth: baseDepth });
 
         while (stack.length > 0) {
             const { scene, depth } = stack.pop();
