@@ -31,9 +31,9 @@
             </label>
         </div>
     </div>
-    <button onclick="addChoiceField()">Weitere Entscheidung hinzufügen</button>
-    <button onclick="addScene()">Szene speichern</button>
-    <button onclick="removeScene()">Szene löschen</button>
+    <button id="add-choice-field">Weitere Entscheidung hinzufügen</button>
+    <button id="add-scene">Szene speichern</button>
+    <button id="remove-scene">Szene löschen</button>
     <pre id="scene-status">(noch keine Aktion durchgeführt)</pre>
 </div>
 
@@ -45,7 +45,7 @@
 <div class="section">
     <h2><span class="emoji">🎮</span>Interaktive Vorschau</h2>
     <p class="help">Die Geschichte wird ab der Szene mit dem Schlüssel <code>start</code> gestartet</p>
-    <button onclick="startStory()">Geschichte starten</button>
+    <button id="start-story">Geschichte starten</button>
     <div id="play-area"></div>
 </div>
 
@@ -53,7 +53,7 @@
     <h2><span class="emoji">🧭</span>Entscheidungsbaum (ASCII-Übersicht)</h2>
     <p class="help">Diese einfache Textdarstellung zeigt, welche Szene zu welcher führt. Sie wird automatisch aus deinem Story-Aufbau generiert.</p>
     <pre id="tree-output">(noch kein Baum erstellt)</pre>
-    <button id="btnAsciiTreeRefresh">Entscheidungsbaum aktualisieren</button>
+    <button id="btn-ascii-tree-refresh">Entscheidungsbaum aktualisieren</button>
 </div>
 
 <div class="section">

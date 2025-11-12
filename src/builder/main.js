@@ -46,6 +46,14 @@ function generateTreeAscii(parentElement = document.getElementById('tree-output'
  */
 function addChoiceField(parentElement = document.getElementById('choices-container'))
 {
+    if (!parentElement) {
+        console.error('parentElement is not found.');
+        return;
+    }
+    console.log('parentElement:', parentElement);
+    console.log('parentElement type:', typeof parentElement);
+    console.log('parentElement instanceof HTMLElement:', parentElement instanceof HTMLElement);
+
     const container = document.createElement('div');
     container.className = 'choice-inputs';
     container.innerHTML = `
@@ -136,6 +144,20 @@ function renderScene(key)
     area.innerHTML = html;
 }
 
+function editScene() {
+    const keyInput = document.getElementById("scene-key");
+    const status = document.getElementById("scene-status");
+    const textInput = document.getElementById("scene-text");
+    const key = keyInput.value.trim();
+    const text = textInput.value.trim();
+
+    if(!key){
+        status.textContent = "Bitte gib den Schlüssel der zu bearbeitenden Szene ein.";
+        status.style.color = "red";
+        return;
+    }
+}
+
 function removeScene(){
     const keyInput = document.getElementById("scene-key");
     const key = keyInput.value.trim();
@@ -162,11 +184,7 @@ function removeScene(){
     generateTreeAscii();
 }
 
-// make functions available to HTML file
-window.addChoiceField = addChoiceField;
-window.addScene = addScene;
-window.startStory = startStory;
-// make helper functions available
+// make helper functions available to HTML file
 window.renderPreview = renderPreview;
 window.renderScene = renderScene;
 window.removeScene = removeScene;
@@ -174,8 +192,27 @@ window.removeScene = removeScene;
 // Register functions
 window.addEventListener("DOMContentLoaded", (event) => {
     console.log("page is fully loaded");
-    document.getElementById("btnAsciiTreeRefresh").addEventListener("click", () => {
-        generateTreeAscii();  // ruft sie ohne Event-Argument auf
+    const addChoiceButton = document.getElementById('add-choice-field');
+    addChoiceButton.addEventListener('click', () => {
+        const parentElement = document.getElementById('choices-container');
+        if (parentElement) {
+            addChoiceField(parentElement);
+        } else {
+            console.error('choices-container not found.');
+        }
+    });
+
+    const addSceneButton = document.getElementById('add-scene');
+    addSceneButton.addEventListener('click', addScene);
+
+    const removeSceneButton = document.getElementById('remove-scene');
+    removeSceneButton.addEventListener('click', removeScene);
+
+    const startStoryButton = document.getElementById('start-story');
+    startStoryButton.addEventListener('click', startStory);
+
+    document.getElementById("btn-ascii-tree-refresh").addEventListener("click", () => {
+        generateTreeAscii();
     });
 });
 

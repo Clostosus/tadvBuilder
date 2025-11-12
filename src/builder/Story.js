@@ -138,10 +138,10 @@ export default class Story {
     /* Content means the story text of the scene itself, and the description texts of the choices in this scene.
      * @param {string} key
      * @param {string} storyText
-     * @param {Map<string,string>} choiceTexts
+     * @param {Map<string,string>} choiceTexts(<key,text>)
      * @return {boolean} true if content was edited, false if not found
      */
-    editSceneContent(key, storyText, choiceTexts)
+    editSceneContent(key, storyText, choiceTexts = null)
     {
         let scene = this.scenes.get(key);
         if(!scene){
@@ -153,9 +153,10 @@ export default class Story {
         }
         if(choiceTexts){
             for (const [next, text] of choiceTexts.entries()) {
-                scene.updateChoice(next, text);
+                if(! scene.updateChoice(next, text)) { console.warn(`Failed to edit choice ${next} in scene ${key}`); }
             }
         }
+        return true;
     }
 
     /**
