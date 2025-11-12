@@ -1,58 +1,45 @@
 import Scene from './Scene.js';
 import Story from "./Story.js";
 import SaveLoad from "./SaveLoad.js";
+import StoryTreeRenderer from './StoryTreeRenderer.js';
 
 let story = new Story(Scene);
 window.currentStory = null;
 
 /**
- * Generates the story tree as an ASCII-style string.
- * Marks missing (unresolved) scenes explicitly.
- * @param {HTMLElement} parentElement Element inside which the output will be inserted.
+ * Displays a temporary feedback message in the UI.
+ * @param {string} message - The message to display.
+ * @param {HTMLElement} targetElement - The HTML element where the message will be added.
+ * @param {boolean} isSuccess - Determines if the message is a success or error.
+ * @param {string} mode - Determines how the message is handled ('create' or 'set').
  */
-function generateTreeAscii(parentElement = document.getElementById('tree-output'))
-{
-    if (!parentElement) return;
-    if (!story || !story.root) {
-        parentElement.textContent = '(noch kein Baum erstellt)';
-        return;
+function showFeedback(message, targetElement, isSuccess, mode = 'create') {
+    if (!targetElement) return;
+
+    const color = isSuccess ? '#166534' : '#9b2c2c';
+    if (mode === 'create') {
+        const notice = document.createElement('div');
+        notice.textContent = message;
+        notice.style.color = color;
+        targetElement.appendChild(notice);
+        setTimeout(() => notice.remove(), 3000);
+    } else if (mode === 'set') {
+        targetElement.textContent = message;
+        targetElement.style.color = color;
     }
-
-    const scenesWithDepth = story.getScenesDFS(story.root);
-    const outputLines = [];
-    for (let i = 0; i < scenesWithDepth.length; i++) {
-        let { key, scene, depth } = scenesWithDepth[i];
-
-        // Tree-prefix (Indentation with ASCII)
-        let prefix = '';
-        for (let d = 0; d < depth; d++) {
-            prefix += (d === depth - 1) ? '|_ ' : '   ';
-        }
-        key = String(key); // ensure its string
-
-        if (scene === null) {
-            outputLines.push(prefix + '[' + key + ']' + "(MISSING)");
-        } else {
-            outputLines.push(prefix + key);
-        }
-    }
-    const output =  outputLines.join('\n');
-    parentElement.textContent = output;
 }
 
 /**
  * Adds a new choice field to the choices container.
  * @returns void
  */
-function addChoiceField(parentElement = document.getElementById('choices-container'))
+function addChoiceField()
 {
+    const parentElement = document.getElementById('choices-container');
     if (!parentElement) {
         console.error('parentElement is not found.');
         return;
     }
-    console.log('parentElement:', parentElement);
-    console.log('parentElement type:', typeof parentElement);
-    console.log('parentElement instanceof HTMLElement:', parentElement instanceof HTMLElement);
 
     const container = document.createElement('div');
     container.className = 'choice-inputs';
@@ -71,7 +58,12 @@ function addScene()
 {
     const sceneKey = document.getElementById('scene-key').value.trim();
     const text = document.getElementById('scene-text').value.trim();
-    if (!sceneKey || !text) return alert("Bitte Schlüssel und Text ausfüllen.");
+    const editorSection = document.getElementById('sceneEditor');
+
+    if (!sceneKey || !text) {
+        showFeedback("Bitte Schlüssel und Text ausfüllen.", editorSection, false);
+        return;
+    }
 
     const choiceElements = document.querySelectorAll('.choice-inputs');
     const choices = new Map();
@@ -82,11 +74,11 @@ function addScene()
     });
 
     if(! story.addScene(new Scene(sceneKey, text, null, choices))){
-        console.log("Scene could not be added to story, key already exists.");
+        showFeedback("Scene could not be added to story, key already exists.", editorSection, false);
         return;
     }
     renderPreview(sceneKey);
-    generateTreeAscii();
+    StoryTreeRenderer.generateTreeAscii(story);
 
     // Eingabefelder leeren
     document.getElementById('scene-key').value = "";
@@ -95,21 +87,9 @@ function addScene()
     choicesContainer.innerHTML = `<div class="choice-inputs">
     <input type="text" class="choice-text" placeholder="Entscheidungstext">
     <input type="text" class="choice-next" placeholder="Nächste Szene (Schlüssel)">
-  </div>`;
+    </div>`;
 
-    // Rückmeldung anzeigen
-    const notice = document.createElement('div');
-    notice.textContent = `✅ Szene '${sceneKey}' wurde gespeichert.`;
-    notice.style.backgroundColor = '#dcfce7';
-    notice.style.border = '1px solid #22c55e';
-    notice.style.color = '#166534';
-    notice.style.padding = '0.5rem 1rem';
-    notice.style.borderRadius = '6px';
-    notice.style.marginTop = '1rem';
-    notice.style.fontSize = '0.95rem';
-    const section = document.querySelectorAll('.section')[0];
-    section.appendChild(notice);
-    setTimeout(() => notice.remove(), 3000);
+    showFeedback(`Szene wurde gespeichert.`, editorSection, true)
 }
 
 function renderPreview(key)
@@ -155,15 +135,17 @@ function editScene() {
     const text = textInput.value.trim();
 
     if(!key){
-        status.textContent = "Bitte gib den Schlüssel der zu bearbeitenden Szene ein.";
-        status.style.color = "red";
+        showFeedback("Bitte gib den Schlüssel der zu bearbeitenden Szene ein.", status, false);
         return;
     }
     if(!text){
-        status.textContent = "Bitte gib den Text der zu bearbeitenden Szene ein.";
-        status.style.color = "red";
+        showFeedback("Bitte gib den Schlüssel der zu bearbeitenden Szene ein.", status, false);
+        return;
     }
-    story.editSceneContent(key, text);
+    let success = story.editSceneContent(key, text);
+    if(success){
+        showFeedback(`Szene wurde erfolgreich bearbeitet.`, status, true);
+    }
 }
 
 function removeScene(){
@@ -172,24 +154,20 @@ function removeScene(){
     const status = document.getElementById("scene-status");
 
     if (!key) {
-        status.textContent = "Bitte gib den Schlüssel der zu löschenden Szene ein.";
-        status.style.color = "red";
+        showFeedback("Bitte gib den Schlüssel der zu löschenden Szene ein.", status, false);
         return;
     }
-    if(! confirm(`Soll die Szene "${key}" wirklich gelöscht werden?`)){
-        return;
-    }
+    if(! confirm(`Soll die Szene "${key}" wirklich gelöscht werden?`)) return;
+
     const success = story.removeScene(key);
     if(! success){
-        status.textContent = `Keine Szene mit dem Schlüssel "${key}" gefunden.`;
-        status.style.color = "orange";
+        showFeedback(`Keine Szene mit dem Schlüssel "${key}" gefunden.`, status, false);
         return;
     }
-    status.textContent = `Szene "${key}" wurde erfolgreich gelöscht.`;
-    status.style.color = "green";
+    showFeedback(`Szene "${key}" wurde erfolgreich gelöscht.`, status, true);
     keyInput.value = "";
     document.getElementById("scene-text").value = "";
-    generateTreeAscii();
+    StoryTreeRenderer.generateTreeAscii(story);
 }
 
 /**
@@ -200,7 +178,7 @@ async function importStory() {
     const fileInput = document.getElementById("json-file");
     const importStatus = document.getElementById("import-status");
     if (!fileInput.files.length) {
-        importStatus.textContent = "Bitte zuerst eine JSON-Datei auswählen.";
+        showFeedback("Bitte zuerst eine JSON-Datei auswählen.", importStatus, false);
         return;
     }
 
@@ -214,12 +192,12 @@ async function importStory() {
             return;
         }
         window.currentStory = story;
-        importStatus.textContent = `"${file.name}" erfolgreich geladen (${story.scenes.size} Szenen).`;
+        showFeedback(`"${file.name}" erfolgreich geladen (${story.scenes.size} Szenen).`, importStatus, true);
 
-        if (typeof generateTreeAscii === "function") generateTreeAscii();
-        if (typeof startStory === "function") startStory();
+        StoryTreeRenderer.generateTreeAscii(story);
+        startStory();
     } catch (err) {
-        importStatus.textContent = "Fehler beim Laden: " + err.message;
+        showFeedback("Fehler beim Laden: " + err.message, importStatus, false);
     } finally {
         URL.revokeObjectURL(fileUrl);
     }
@@ -231,10 +209,11 @@ async function importStory() {
  */
 function exportToJson() {
     if (!window.currentStory) {
-        alert("No story available to export.");
+        showFeedback("No story available to export.", document.getElementById("import-status"), false);
         return;
     }
-    SaveLoad.saveToJson(window.currentStory, "story.json");
+    let success = SaveLoad.saveToJson(window.currentStory, "story.json");
+    if(success) showFeedback("Story successfully exported to JSON.", document.getElementById("import-status"), true);
 }
 
 /**
@@ -243,10 +222,11 @@ function exportToJson() {
  */
 function exportToHtml() {
     if (!window.currentStory) {
-        alert("No story available to export.");
+        showFeedback("No story available to export.", document.getElementById("import-status"), false);
         return;
     }
-    SaveLoad.saveToHtml(window.currentStory, "story.html");
+    let success = SaveLoad.saveToHtml(window.currentStory, "story.html");
+    if(success) showFeedback("Story successfully exported to HTML.", document.getElementById("import-status"), true);
 }
 
 // make helper functions available for onclick to HTML file
@@ -260,8 +240,12 @@ window.addEventListener("DOMContentLoaded", (event) => {
     document.getElementById('add-choice-field').addEventListener('click', addChoiceField);
     document.getElementById('add-scene').addEventListener('click', addScene);
     document.getElementById('remove-scene').addEventListener('click', removeScene);
+    document.getElementById('edit-scene').addEventListener('click', editScene);
+
     document.getElementById('start-story').addEventListener('click', startStory);
-    document.getElementById("btn-ascii-tree-refresh").addEventListener("click", generateTreeAscii);
+    document.getElementById("btn-ascii-tree-refresh").addEventListener("click", () => {
+        StoryTreeRenderer.generateTreeAscii(window.currentStory);
+    });
 
     // --- JSON Import/Export Button Events ---
     document.getElementById("import-json").addEventListener("click", importStory);
