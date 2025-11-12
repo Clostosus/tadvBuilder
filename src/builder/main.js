@@ -249,6 +249,11 @@ function exportToHtml() {
     SaveLoad.saveToHtml(window.currentStory, "story.html");
 }
 
+// make helper functions available for onclick to HTML file
+window.renderPreview = renderPreview;
+window.renderScene = renderScene;
+window.removeScene = removeScene;
+
 // Register functions
 window.addEventListener("DOMContentLoaded", (event) => {
     console.log("page is fully loaded");
