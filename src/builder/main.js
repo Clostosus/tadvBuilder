@@ -2,8 +2,8 @@ import Scene from './Scene.js';
 import Story from "./Story.js";
 import SaveLoad from "./SaveLoad.js";
 
-// const story = new Story();
 let story = new Story(Scene);
+window.currentStory = null;
 
 /**
  * Generates the story tree as an ASCII-style string.
@@ -81,7 +81,10 @@ function addScene()
         if (text && next) choices.set(next, text);
     });
 
-    story.addScene(new Scene(sceneKey, text, null, choices));
+    if(! story.addScene(new Scene(sceneKey, text, null, choices))){
+        console.log("Scene could not be added to story, key already exists.");
+        return;
+    }
     renderPreview(sceneKey);
     generateTreeAscii();
 
@@ -156,6 +159,11 @@ function editScene() {
         status.style.color = "red";
         return;
     }
+    if(!text){
+        status.textContent = "Bitte gib den Text der zu bearbeitenden Szene ein.";
+        status.style.color = "red";
+    }
+    story.editSceneContent(key, text);
 }
 
 function removeScene(){
@@ -184,51 +192,13 @@ function removeScene(){
     generateTreeAscii();
 }
 
-// make helper functions available to HTML file
-window.renderPreview = renderPreview;
-window.renderScene = renderScene;
-window.removeScene = removeScene;
-
-// Register functions
-window.addEventListener("DOMContentLoaded", (event) => {
-    console.log("page is fully loaded");
-    const addChoiceButton = document.getElementById('add-choice-field');
-    addChoiceButton.addEventListener('click', () => {
-        const parentElement = document.getElementById('choices-container');
-        if (parentElement) {
-            addChoiceField(parentElement);
-        } else {
-            console.error('choices-container not found.');
-        }
-    });
-
-    const addSceneButton = document.getElementById('add-scene');
-    addSceneButton.addEventListener('click', addScene);
-
-    const removeSceneButton = document.getElementById('remove-scene');
-    removeSceneButton.addEventListener('click', removeScene);
-
-    const startStoryButton = document.getElementById('start-story');
-    startStoryButton.addEventListener('click', startStory);
-
-    document.getElementById("btn-ascii-tree-refresh").addEventListener("click", () => {
-        generateTreeAscii();
-    });
-});
-
-// === JSON Import/Export GUI ===
-
-const fileInput = document.getElementById("json-file");
-const importBtn = document.getElementById("import-json");
-const exportToJsonButton = document.getElementById("export-json");
-const exportToHtmlButton = document.getElementById("export-html");
-const importStatus = document.getElementById("import-status");
-
-// Reference to the current story object
-window.currentStory = null;
-
-// --- IMPORT ---
-importBtn.addEventListener("click", async () => {
+/**
+ * Imports a story from a JSON file.
+ * @returns void
+ */
+async function importStory() {
+    const fileInput = document.getElementById("json-file");
+    const importStatus = document.getElementById("import-status");
     if (!fileInput.files.length) {
         importStatus.textContent = "Bitte zuerst eine JSON-Datei auswählen.";
         return;
@@ -253,21 +223,43 @@ importBtn.addEventListener("click", async () => {
     } finally {
         URL.revokeObjectURL(fileUrl);
     }
-});
+}
 
-// --- EXPORT ---
-exportToJsonButton.addEventListener("click", () => {
+/**
+ * Exports the current story to a JSON file.
+ * @returns void
+ */
+function exportToJson() {
     if (!window.currentStory) {
-        alert("Keine Story zum Exportieren vorhanden.");
+        alert("No story available to export.");
         return;
     }
     SaveLoad.saveToJson(window.currentStory, "story.json");
-});
+}
 
-exportToHtmlButton.addEventListener("click", () => {
+/**
+ * Exports the current story to an HTML file.
+ * @returns void
+ */
+function exportToHtml() {
     if (!window.currentStory) {
-        alert("Keine Story zum Exportieren vorhanden.");
+        alert("No story available to export.");
         return;
     }
     SaveLoad.saveToHtml(window.currentStory, "story.html");
+}
+
+// Register functions
+window.addEventListener("DOMContentLoaded", (event) => {
+    console.log("page is fully loaded");
+    document.getElementById('add-choice-field').addEventListener('click', addChoiceField);
+    document.getElementById('add-scene').addEventListener('click', addScene);
+    document.getElementById('remove-scene').addEventListener('click', removeScene);
+    document.getElementById('start-story').addEventListener('click', startStory);
+    document.getElementById("btn-ascii-tree-refresh").addEventListener("click", generateTreeAscii);
+
+    // --- JSON Import/Export Button Events ---
+    document.getElementById("import-json").addEventListener("click", importStory);
+    document.getElementById("export-json").addEventListener("click", exportToJson);
+    document.getElementById("export-html").addEventListener("click", exportToHtml);
 });
