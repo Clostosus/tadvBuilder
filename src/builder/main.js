@@ -16,16 +16,17 @@ window.currentStory = null;
 function showFeedback(message, targetElement, isSuccess, mode = 'create') {
     if (!targetElement) return;
 
-    const color = isSuccess ? '#166534' : '#9b2c2c';
+    const feedbackClass = isSuccess ? 'feedback-success' : 'feedback-error';
+
     if (mode === 'create') {
         const notice = document.createElement('div');
         notice.textContent = message;
-        notice.style.color = color;
+        notice.classList.add('feedback', feedbackClass); // CSS-Klasse hinzufügen
         targetElement.appendChild(notice);
         setTimeout(() => notice.remove(), 3000);
     } else if (mode === 'set') {
         targetElement.textContent = message;
-        targetElement.style.color = color;
+        targetElement.classList.add('feedback', feedbackClass); // CSS-Klasse hinzufügen
     }
 }
 

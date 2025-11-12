@@ -1,12 +1,25 @@
+/* Globals */
+:root {
+    --color-text: #1e293b;        /* primary textcolor */
+    --color-background: #f8fafc;  /* Background */
+    --color-highlight-background: #c6d9e8;
+    --color-foreground: #3b82f6;  /* accent color (e.g. buttons, links) */
+    --color-accent: #0ea5e9;      /* secondary accent color for details */
+
+    --color-success: #166534;
+    --color-error: #9b2c2c;
+}
+
 body {
     font-family: system-ui, sans-serif;
     margin: 2rem;
     line-height: 1.6;
-    background-color: #f8fafc;
-    color: #1e293b;
+
+    background-color: var(--color-background);
+    color: var(--color-text);
 }
 h1, h2 {
-    color: #0f172a;
+    color: var(--color-text);
 }
 textarea, input, select, button {
     display: block;
@@ -16,7 +29,7 @@ textarea, input, select, button {
     padding: 0.6rem;
     font-size: 1rem;
     border-radius: 8px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--color-foreground);
     box-sizing: border-box;
 }
 input[type="text"]::before, textarea::before {
@@ -27,8 +40,8 @@ label {
     font-weight: bold;
 }
 button {
-    background-color: #3b82f6;
-    color: white;
+    background-color: var(--color-foreground);
+    color: var(--color-background);
     border: none;
     padding: 0.6rem 1rem;
     border-radius: 6px;
@@ -39,34 +52,34 @@ button {
     font-weight: 500;
 }
 button:hover {
-    background-color: #2563eb;
+    background-color: var(--color-accent);
 }
 .section {
-    background: white;
+    background: var(--color-background);;
     border-radius: 12px;
     padding: 1.5rem;
     margin-top: 2rem;
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 .sectionHighlighted {
-    background-color: #e0f2fe;
-    border-left: 5px solid #0ea5e9;
+    background-color: var(--color-highlight-background);
+    border-left: 5px solid var(--color-accent);
 }
 .bluesidebarP {
     font-size: 0.875rem;
-    background-color: #cfeafe;
+    background-color: var(--color-foreground);
     padding: 0.5rem 1rem;
-    border-left: 4px solid #3b82f6;
+    border-left: 4px solid var(--color-foreground);
     border-radius: 4px;
     margin-bottom: 1rem;
 }
-#output, #preview, #play-area, #tree-output {
-    background: #f1f5f9;
-    border: 1px solid #cbd5e1;
-    padding: 1rem;
-    border-radius: 8px;
-    white-space: pre-wrap;
-    font-family: ui-monospace, SFMono-Regular, monospace;
+
+.feedback-success {
+    color: var(--color-success);
+}
+
+.feedback-error {
+    color: var(--color-error);
 }
 .choice-inputs {
     margin-bottom: 1rem;
@@ -75,7 +88,7 @@ button:hover {
 }
 .help {
     font-size: 0.875rem;
-    color: #475569;
+    color: var(--color-text);
     margin-top: -0.5rem;
     margin-bottom: 0.5rem;
 }
@@ -88,29 +101,25 @@ button:hover {
 }
 .intro h1 {
     font-size: 2rem;
-    color: #1d4ed8;
+    color: var(--color-foreground);
     margin-bottom: 0.25rem;
 }
 .intro h2 {
     margin-top: -0.5rem;
-    color: #334155;
+    color: var(--color-text);
     font-weight: normal;
     font-size: 1.2rem;
 }
 
-.emoji {
-    font-style: normal;
-    margin-right: 0.5rem;
+#output, #preview, #play-area, #tree-output {
+    background: var(--color-background);
+    border: 1px solid var(--color-foreground);
+    padding: 1rem;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    font-family: ui-monospace, SFMono-Regular, monospace;
 }
+
 #play-area button {
     margin-top: 0.5rem;
-}
-#userNotice {
-    font-size: 0.9rem;
-}
-#storyViewerTemplate {
-    white-space: pre-wrap;
-    background-color: #e2e8f0;
-    padding: 1rem;
-    border-radius: 6px;
 }
