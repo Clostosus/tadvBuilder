@@ -1,3 +1,5 @@
+import Story from "./Story.js";
+
 export default class StoryTreeRenderer {
     /**
      * Generates the story tree as an ASCII-style string.
@@ -12,7 +14,7 @@ export default class StoryTreeRenderer {
             return;
         }
 
-        const scenesWithDepth = story.getScenesDFS(story.root);
+        const scenesWithDepth = Story.getScenesDFS(story,story.root);
         const outputLines = [];
         for (let i = 0; i < scenesWithDepth.length; i++) {
             let { key, scene, depth } = scenesWithDepth[i];

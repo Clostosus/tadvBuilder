@@ -75,11 +75,12 @@ export default class Story {
 
     /**
      * Depth of a scene relative to the root scene.
-     * @param {Scene} scene key of the scene
-     * @returns {number} depth of the scene, -1 if scene not found
+     * @param {Map<string, Scene>} scenes - The map of scenes in the story (Key -> Scene).
+     * @param {Scene} scene - The scene whose depth needs to be calculated.
+     * @returns {number} The depth of the scene, -1 if the scene is not found.
      */
-    getSceneDepth(scene) {
-        if(! this.scenes.has(scene.key)){ return -1; }
+    static getSceneDepth(scenes, scene) {
+        if(! scenes.has(scene.key)){ return -1; }
 
         let depth = 0;
         let current = scene;
@@ -93,10 +94,11 @@ export default class Story {
     /**
      * Retrieves all scene references below start scene as array in depth-first order.
      * starting from the given scene (defaults to root).
+     * @param {Story} story - The story instance containing the scenes.
      * @param {Scene} [startScene=this.root]
      * @returns {Array<SceneRef>} Array of { key, scene, depth }
      */
-    getScenesDFS(startScene = this.root)
+    static getScenesDFS(story, startScene = this.root)
     {
         if (!startScene) return [];
         /** @type {Array<SceneRef>} */
@@ -105,8 +107,8 @@ export default class Story {
         const visited = new Set();
 
         let baseDepth = 0;
-        if (startScene !== this.root) {
-            baseDepth = this.getSceneDepth(startScene);
+        if (startScene !== story.root) {
+            baseDepth = Story.getSceneDepth(story.scenes,startScene);
         }
         stack.push({ scene: startScene, depth: baseDepth });
 
@@ -119,7 +121,7 @@ export default class Story {
 
             const children = [];
             for (const [next] of scene.choices.entries()) {
-                const child = this.getScene(next);
+                const child = story.getScene(next);
                 if (child) {
                     children.push(child);
                 }else {
@@ -175,7 +177,7 @@ export default class Story {
         if(scene.parent){ scene.parent.removeChoice(scene.key); }
 
         // Get all scenes below this scene (inclusive this one)
-        const allScenesBelow = this.getScenesDFS(scene);
+        const allScenesBelow = Story.getScenesDFS(this, scene);
 
         // in dfs order, parents come before children
         // To be sure that child scenes are removed before parent, we use a reverse loop:

@@ -3,15 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>Choose Your Own Adventure</title>
-<style>body {
+<style>/* Globals */
+:root {
+    --color-text: #1e293b;        /* primary textcolor */
+    --color-background: #f8fafc;  /* Background */
+    --color-highlight-background: #c6d9e8;
+    --color-foreground: #3b82f6;  /* accent color (e.g. buttons, links) */
+    --color-accent: #0ea5e9;      /* secondary accent color for details */
+
+    --color-success: #166534;
+    --color-error: #9b2c2c;
+}
+
+body {
     font-family: system-ui, sans-serif;
     margin: 2rem;
     line-height: 1.6;
-    background-color: #f8fafc;
-    color: #1e293b;
+
+    background-color: var(--color-background);
+    color: var(--color-text);
 }
 h1, h2 {
-    color: #0f172a;
+    color: var(--color-text);
 }
 textarea, input, select, button {
     display: block;
@@ -21,7 +34,7 @@ textarea, input, select, button {
     padding: 0.6rem;
     font-size: 1rem;
     border-radius: 8px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--color-foreground);
     box-sizing: border-box;
 }
 input[type="text"]::before, textarea::before {
@@ -32,8 +45,8 @@ label {
     font-weight: bold;
 }
 button {
-    background-color: #3b82f6;
-    color: white;
+    background-color: var(--color-foreground);
+    color: var(--color-background);
     border: none;
     padding: 0.6rem 1rem;
     border-radius: 6px;
@@ -44,34 +57,34 @@ button {
     font-weight: 500;
 }
 button:hover {
-    background-color: #2563eb;
+    background-color: var(--color-accent);
 }
 .section {
-    background: white;
+    background: var(--color-background);;
     border-radius: 12px;
     padding: 1.5rem;
     margin-top: 2rem;
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 .sectionHighlighted {
-    background-color: #e0f2fe;
-    border-left: 5px solid #0ea5e9;
+    background-color: var(--color-highlight-background);
+    border-left: 5px solid var(--color-accent);
 }
 .bluesidebarP {
     font-size: 0.875rem;
-    background-color: #cfeafe;
+    background-color: var(--color-foreground);
     padding: 0.5rem 1rem;
-    border-left: 4px solid #3b82f6;
+    border-left: 4px solid var(--color-foreground);
     border-radius: 4px;
     margin-bottom: 1rem;
 }
-#output, #preview, #play-area, #tree-output {
-    background: #f1f5f9;
-    border: 1px solid #cbd5e1;
-    padding: 1rem;
-    border-radius: 8px;
-    white-space: pre-wrap;
-    font-family: ui-monospace, SFMono-Regular, monospace;
+
+.feedback-success {
+    color: var(--color-success);
+}
+
+.feedback-error {
+    color: var(--color-error);
 }
 .choice-inputs {
     margin-bottom: 1rem;
@@ -80,7 +93,7 @@ button:hover {
 }
 .help {
     font-size: 0.875rem;
-    color: #475569;
+    color: var(--color-text);
     margin-top: -0.5rem;
     margin-bottom: 0.5rem;
 }
@@ -93,31 +106,27 @@ button:hover {
 }
 .intro h1 {
     font-size: 2rem;
-    color: #1d4ed8;
+    color: var(--color-foreground);
     margin-bottom: 0.25rem;
 }
 .intro h2 {
     margin-top: -0.5rem;
-    color: #334155;
+    color: var(--color-text);
     font-weight: normal;
     font-size: 1.2rem;
 }
 
-.emoji {
-    font-style: normal;
-    margin-right: 0.5rem;
+#output, #preview, #play-area, #tree-output {
+    background: var(--color-background);
+    border: 1px solid var(--color-foreground);
+    padding: 1rem;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    font-family: ui-monospace, SFMono-Regular, monospace;
 }
+
 #play-area button {
     margin-top: 0.5rem;
-}
-#userNotice {
-    font-size: 0.9rem;
-}
-#storyViewerTemplate {
-    white-space: pre-wrap;
-    background-color: #e2e8f0;
-    padding: 1rem;
-    border-radius: 6px;
 }</style>
 </head>
 <body>
@@ -153,26 +162,26 @@ button:hover {
     <pre id="scene-status">(noch keine Aktion durchgeführt)</pre>
 </div>
 
-<div class="section">
-    <h2><span class="emoji">🔍</span>Vorschau der aktuellen Szene</h2>
+<div id="preview-section" class="section">
+    <h2>Vorschau der aktuellen Szene</h2>
     <div id="preview">(noch keine Vorschau verfügbar)</div>
 </div>
 
-<div class="section">
-    <h2><span class="emoji">🎮</span>Interaktive Vorschau</h2>
+<div id="play-section" class="section">
+    <h2>Interaktive Vorschau</h2>
     <p class="help">Die Geschichte wird ab der Szene mit dem Schlüssel <code>start</code> gestartet</p>
     <button id="start-story">Geschichte starten</button>
     <div id="play-area"></div>
 </div>
 
-<div class="section">
-    <h2><span class="emoji">🧭</span>Entscheidungsbaum (ASCII-Übersicht)</h2>
+<div id="tree-section" class="section">
+    <h2>Entscheidungsbaum (ASCII-Übersicht)</h2>
     <p class="help">Diese einfache Textdarstellung zeigt, welche Szene zu welcher führt. Sie wird automatisch aus deinem Story-Aufbau generiert.</p>
     <pre id="tree-output">(noch kein Baum erstellt)</pre>
     <button id="btn-ascii-tree-refresh">Entscheidungsbaum aktualisieren</button>
 </div>
 
-<div class="section">
+<div id="import-export-section" class="section">
     <h2><span class="emoji"></span> Geschichte importieren / exportieren</h2>
     <p class="help">Lade eine bestehende Geschichte (JSON) oder exportiere deine aktuelle Arbeit.</p>
 
@@ -185,13 +194,13 @@ button:hover {
     <pre id="import-status">(kein Import durchgeführt)</pre>
 </div>
 
-<script>var a=class{constructor(e,t="",n=null,o=null){if(this.key=e,this.text=t,this.parent=n,this.choices=new Map,o instanceof Map)for(let[s,r]of o)this.choices.set(s,r);else if(Array.isArray(o))for(let s of o)s.next&&s.text&&this.choices.set(s.next,s.text)}addChoice(e,t){return this.choices.has(t)?!1:(this.choices.set(t,e),!0)}updateChoice(e,t){return this.choices.has(e)?(this.choices.set(e,t),!0):!1}removeChoice(e){return this.choices.delete(e)}getAllChoices(){return Array.from(this.choices,([e,t])=>({text:t,next:e}))}static fromJson(e,t){if(!e||!t)return null;let n=null;if(typeof t=="string")try{n=JSON.parse(t)}catch(s){return console.error(`Failed to parse JSON for scene ${e}: ${s}`),null}else if(typeof t=="object")n=t;else return console.error(`Failed to parse JSON for scene ${e}: Invalid JSON type`),null;if(!n.text||typeof n.text!="string")return console.error(`Scene ${e} missing text property.`),null;let o=new a(e,n.text,null,[]);if(Array.isArray(n.choices))for(let s of n.choices)!s||typeof s.text!="string"||typeof s.next!="string"||o.addChoice(s.text,s.next);return o}toJSON(){let e=[];for(let[t,n]of this.choices.entries())e.push({text:n,next:t});return e.length===0?{text:this.text}:{text:this.text,choices:e}}};var I=class{constructor(e){this.sceneClass=e,this.scenes=new Map,this.root=null}addScene(e){if(!(e instanceof this.sceneClass)||this.scenes.has(e.key))return!1;if(this.scenes.set(e.key,e),!this.root)return this.root=e,!0;if(!e.parent&&this.root&&this.scenes.size>0){let t=this.findParent(e.key);t?(e.parent=t,t.addChoice(e.text||`to ${e.key}`,e.key)):(this.root.addChoice(e.text||`to ${e.key}`,e.key),e.parent=this.root)}return e.parent&&this.scenes.has(e.parent.key)&&this.scenes.get(e.parent.key).addChoice(e.text||`to ${e.key}`,e.key),!0}findParent(e){for(let t of this.scenes.values())if(t.choices instanceof Map&&t.choices.has(e))return t;return null}getScene(e){return this.scenes.get(e)||null}getSceneDepth(e){if(!this.scenes.has(e.key))return-1;let t=0,n=e;for(;n&&n.parent;)t++,n=n.parent;return t}getScenesDFS(e=this.root){if(!e)return[];let t=[],n=[],o=new Set,s=0;for(e!==this.root&&(s=this.getSceneDepth(e)),n.push({scene:e,depth:s});n.length>0;){let{scene:r,depth:l}=n.pop();if(o.has(r.key))continue;o.add(r.key),t.push({key:r.key,scene:r,depth:l});let d=[];for(let[g]of r.choices.entries()){let f=this.getScene(g);f?d.push(f):t.push({key:g,scene:null,depth:l+1})}for(let g=d.length-1;g>=0;g--)n.push({scene:d[g],depth:l+1})}return t}editSceneContent(e,t,n=null){let o=this.scenes.get(e);if(!o)return console.warn(`Scene ${e} not found`),!1;if(t&&(o.text=t),n)for(let[s,r]of n.entries())o.updateChoice(s,r)||console.warn(`Failed to edit choice ${s} in scene ${e}`);return!0}removeScene(e){let t=this.scenes.get(e);if(!t)return console.warn(`Scene ${e} not found`),!1;t.parent&&t.parent.removeChoice(t.key);let n=this.getScenesDFS(t);for(let o=n.length-1;o>=0;o--){let{key:s}=n[o];this.scenes.delete(s)}return!0}toJSON(){let e={};for(let[t,n]of this.scenes.entries())e[t]=n.toJSON();return e}static fromJson(e,t){if(!e||typeof e!="object")return null;if(typeof t.fromJson!="function")return console.warn("SceneClass has no method called: fromJson"),null;let n=new I(t);for(let[o,s]of Object.entries(e)){let r=t.fromJson(o,s);if(r)n.addScene(r);else return console.warn(`Failed to load scene ${o}`),null}return n.scenes.size===0?(console.warn("No scenes found in JSON"),null):n}};var h=class{constructor(){throw new Error("Static class")}static async loadFromJson(e,t,n){if(!e||typeof e!="string")return null;let o=null;try{let s=await fetch(e);if(!s.ok)return null;o=await s.json()}catch{return null}return typeof n.fromJson!="function"?(console.warn("StoryClass has no method called: fromJson"),null):n.fromJson(o,t)}static async saveToJson(e,t){if(!e||!t||typeof t!="string")return console.error("Ungültige Eingabeparameter in saveToJson: story = ",e,", filename = ",t),!1;let n=e.toJSON();try{let o=JSON.stringify(n),s=new Blob([o],{type:"text/json"}),r=document.createElement("a");r.href=URL.createObjectURL(s),r.download=t,r.click(),URL.revokeObjectURL(r.href),console.log("Story saved to Json")}catch(o){return console.error("Failed to save story to Json:"+o),!1}return!0}static async saveToHtml(e,t){if(!e||!t||typeof t!="string")return console.error("Ungültige Eingabeparameter in saveToHtml: story = ",e,", filename = ",t),!1;let n="PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImRlIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+U3RvcnktVmlld2VyPC90aXRsZT4KICAgIDxzdHlsZT4KICAgICAgICBib2R5IHsKICAgICAgICAgICAgZm9udC1mYW1pbHk6IHN5c3RlbS11aSwgc2Fucy1zZXJpZjsKICAgICAgICB9CiAgICAgICAgaDIgewogICAgICAgICAgICBjb2xvcjogIzBmMTcyYTsKICAgICAgICAgICAgbWFyZ2luLWJvdHRvbTogMC4yNXJlbTsKICAgICAgICB9CiAgICAgICAgI2dhbWUgewogICAgICAgICAgICBiYWNrZ3JvdW5kOiAjZjFmNWY5OwogICAgICAgICAgICBib3JkZXI6IDFweCBzb2xpZCAjY2JkNWUxOwogICAgICAgICAgICBwYWRkaW5nOiAxcmVtOwogICAgICAgICAgICBib3JkZXItcmFkaXVzOiA4cHg7CiAgICAgICAgICAgIG1hcmdpbjogMCBhdXRvOwogICAgICAgICAgICBtYXgtd2lkdGg6IDgwMHB4OwogICAgICAgICAgICB3aGl0ZS1zcGFjZTogcHJlLXdyYXA7CiAgICAgICAgICAgIGJveC1zaGFkb3c6IDAgNHB4IDEycHggcmdiYSgwLDAsMCwwLjA2KTsKICAgICAgICB9CiAgICAgICAgI2dhbWUgYnV0dG9uIHsKICAgICAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogIzNiODJmNjsKICAgICAgICAgICAgd2lkdGg6IDEwMCU7CiAgICAgICAgICAgIGNvbG9yOiB3aGl0ZTsKICAgICAgICAgICAgYm9yZGVyOiBub25lOwogICAgICAgICAgICBwYWRkaW5nOiAwLjZyZW0gMXJlbTsKICAgICAgICAgICAgYm9yZGVyLXJhZGl1czogNnB4OwogICAgICAgICAgICBjdXJzb3I6IHBvaW50ZXI7CiAgICAgICAgICAgIG1hcmdpbi10b3A6IDAuNXJlbTsKICAgICAgICAgICAgZm9udC13ZWlnaHQ6IDUwMDsKICAgICAgICB9CiAgICA8L3N0eWxlPgo8L2hlYWQ+Cjxib2R5Pgo8ZGl2IGlkPSJnYW1lIj48L2Rpdj4KCjxzY3JpcHQ+CiAgICBjb25zdCBzdG9yeSA9IHsKICAgICAgICAvLyBJTlNFUlQgSlNPTiBTVE9SWSBIRVJFCg==",o="ICAgIH07CgogICAgZnVuY3Rpb24gc2hvd1NjZW5lKGtleSkKICAgIHsKICAgICAgICBjb25zdCBzY2VuZSA9IHN0b3J5W2tleV07CiAgICAgICAgaWYgKCFzY2VuZSkgcmV0dXJuOwoKICAgICAgICBjb25zdCBjb250YWluZXIgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgiZ2FtZSIpOwogICAgICAgIGNvbnRhaW5lci5pbm5lckhUTUwgPSAiIjsgLy8gZGVsZXRlIHByZXZpb3VzIGNvbnRlbnQvc2NlbmUKCiAgICAgICAgY29uc3QgdGl0bGUgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCJoMiIpOwogICAgICAgIHRpdGxlLnRleHRDb250ZW50ID0ga2V5OyBjb250YWluZXIuYXBwZW5kQ2hpbGQodGl0bGUpOwoKICAgICAgICBjb25zdCB0ZXh0ID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgicCIpOwogICAgICAgIHRleHQudGV4dENvbnRlbnQgPSBzY2VuZS50ZXh0OyBjb250YWluZXIuYXBwZW5kQ2hpbGQodGV4dCk7CgogICAgICAgIGlmICghc2NlbmUuY2hvaWNlcyB8fCBzY2VuZS5jaG9pY2VzLmxlbmd0aCA9PT0gMCkgcmV0dXJuOwoKICAgICAgICBmb3IgKGNvbnN0IGMgb2Ygc2NlbmUuY2hvaWNlcykgewogICAgICAgICAgICBjb25zdCBidXR0b24gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCJidXR0b24iKTsKICAgICAgICAgICAgYnV0dG9uLnRleHRDb250ZW50ID0gYy50ZXh0OwogICAgICAgICAgICBidXR0b24uYWRkRXZlbnRMaXN0ZW5lcigiY2xpY2siLCAoKSA9PiBzaG93U2NlbmUoYy5uZXh0KSk7CiAgICAgICAgICAgIGNvbnRhaW5lci5hcHBlbmRDaGlsZChidXR0b24pOwogICAgICAgICAgICBjb250YWluZXIuYXBwZW5kQ2hpbGQoZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgiYnIiKSk7CiAgICAgICAgfQogICAgfQoKICAgIHNob3dTY2VuZSgic3RhcnQiKTsKPC9zY3JpcHQ+CjwvYm9keT4KPC9odG1sPg==",s=e.toJSON(),r=JSON.stringify(s);r=r.slice(1,-1);try{let l=window.atob(n)+r+window.atob(o),d=new Blob([l],{type:"text/html"}),g=document.createElement("a");g.href=URL.createObjectURL(d),g.download=t,g.click(),URL.revokeObjectURL(g.href),console.log("Story saved to Html")}catch(l){return console.error("Failed to save story to Json:"+l),!1}return!0}};var C=class{static generateTreeAscii(e,t=document.getElementById("tree-output")){if(!t)return;if(!e||!e.root){t.textContent="(noch kein Baum erstellt)";return}let n=e.getScenesDFS(e.root),o=[];for(let r=0;r<n.length;r++){let{key:l,scene:d,depth:g}=n[r],f="";for(let A=0;A<g;A++)f+=A===g-1?"|_ ":"   ";l=String(l),d===null?o.push(f+"["+l+"](MISSING)"):o.push(f+l)}let s=o.join(`
-`);t.textContent=s}};var u=new I(a);window.currentStory=null;function i(c,e,t,n="create"){if(!e)return;let o=t?"#166534":"#9b2c2c";if(n==="create"){let s=document.createElement("div");s.textContent=c,s.style.color=o,e.appendChild(s),setTimeout(()=>s.remove(),3e3)}else n==="set"&&(e.textContent=c,e.style.color=o)}function S(){let c=document.getElementById("choices-container");if(!c){console.error("parentElement is not found.");return}let e=document.createElement("div");e.className="choice-inputs",e.innerHTML=`
+<script>var C=class{constructor(e,t="",n=null,o=null){if(this.key=e,this.text=t,this.parent=n,this.choices=new Map,o instanceof Map)for(let[s,r]of o)this.choices.set(s,r);else if(Array.isArray(o))for(let s of o)s.next&&s.text&&this.choices.set(s.next,s.text)}addChoice(e,t){return this.choices.has(t)?!1:(this.choices.set(t,e),!0)}updateChoice(e,t){return this.choices.has(e)?(this.choices.set(e,t),!0):!1}removeChoice(e){return this.choices.delete(e)}getAllChoices(){return Array.from(this.choices,([e,t])=>({text:t,next:e}))}static fromJson(e,t){if(!e||!t)return null;let n=null;if(typeof t=="string")try{n=JSON.parse(t)}catch(s){return console.error(`Failed to parse JSON for scene ${e}: ${s}`),null}else if(typeof t=="object")n=t;else return console.error(`Failed to parse JSON for scene ${e}: Invalid JSON type`),null;if(!n.text||typeof n.text!="string")return console.error(`Scene ${e} missing text property.`),null;let o=new C(e,n.text,null,[]);if(Array.isArray(n.choices))for(let s of n.choices)!s||typeof s.text!="string"||typeof s.next!="string"||o.addChoice(s.text,s.next);return o}toJSON(){let e=[];for(let[t,n]of this.choices.entries())e.push({text:n,next:t});return e.length===0?{text:this.text}:{text:this.text,choices:e}}};var d=class{constructor(e){this.sceneClass=e,this.scenes=new Map,this.root=null}addScene(e){if(!(e instanceof this.sceneClass)||this.scenes.has(e.key))return!1;if(this.scenes.set(e.key,e),!this.root)return this.root=e,!0;if(!e.parent&&this.root&&this.scenes.size>0){let t=this.findParent(e.key);t?(e.parent=t,t.addChoice(e.text||`to ${e.key}`,e.key)):(this.root.addChoice(e.text||`to ${e.key}`,e.key),e.parent=this.root)}return e.parent&&this.scenes.has(e.parent.key)&&this.scenes.get(e.parent.key).addChoice(e.text||`to ${e.key}`,e.key),!0}findParent(e){for(let t of this.scenes.values())if(t.choices instanceof Map&&t.choices.has(e))return t;return null}getScene(e){return this.scenes.get(e)||null}static getSceneDepth(e,t){if(!e.has(t.key))return-1;let n=0,o=t;for(;o&&o.parent;)n++,o=o.parent;return n}static getScenesDFS(e,t=this.root){if(!t)return[];let n=[],o=[],s=new Set,r=0;for(t!==e.root&&(r=d.getSceneDepth(e.scenes,t)),o.push({scene:t,depth:r});o.length>0;){let{scene:i,depth:a}=o.pop();if(s.has(i.key))continue;s.add(i.key),n.push({key:i.key,scene:i,depth:a});let u=[];for(let[I]of i.choices.entries()){let A=e.getScene(I);A?u.push(A):n.push({key:I,scene:null,depth:a+1})}for(let I=u.length-1;I>=0;I--)o.push({scene:u[I],depth:a+1})}return n}editSceneContent(e,t,n=null){let o=this.scenes.get(e);if(!o)return console.warn(`Scene ${e} not found`),!1;if(t&&(o.text=t),n)for(let[s,r]of n.entries())o.updateChoice(s,r)||console.warn(`Failed to edit choice ${s} in scene ${e}`);return!0}removeScene(e){let t=this.scenes.get(e);if(!t)return console.warn(`Scene ${e} not found`),!1;t.parent&&t.parent.removeChoice(t.key);let n=d.getScenesDFS(this,t);for(let o=n.length-1;o>=0;o--){let{key:s}=n[o];this.scenes.delete(s)}return!0}toJSON(){let e={};for(let[t,n]of this.scenes.entries())e[t]=n.toJSON();return e}static fromJson(e,t){if(!e||typeof e!="object")return null;if(typeof t.fromJson!="function")return console.warn("SceneClass has no method called: fromJson"),null;let n=new d(t);for(let[o,s]of Object.entries(e)){let r=t.fromJson(o,s);if(r)n.addScene(r);else return console.warn(`Failed to load scene ${o}`),null}return n.scenes.size===0?(console.warn("No scenes found in JSON"),null):n}};var f=class{constructor(){throw new Error("Static class")}static async loadFromJson(e,t,n){if(!e||typeof e!="string")return null;let o=null;try{let s=await fetch(e);if(!s.ok)return null;o=await s.json()}catch{return null}return typeof n.fromJson!="function"?(console.warn("StoryClass has no method called: fromJson"),null):n.fromJson(o,t)}static async saveToJson(e,t){if(!e||!t||typeof t!="string")return console.error("Ungültige Eingabeparameter in saveToJson: story = ",e,", filename = ",t),!1;let n=e.toJSON();try{let o=JSON.stringify(n),s=new Blob([o],{type:"text/json"}),r=document.createElement("a");r.href=URL.createObjectURL(s),r.download=t,r.click(),URL.revokeObjectURL(r.href),console.log("Story saved to Json")}catch(o){return console.error("Failed to save story to Json:"+o),!1}return!0}static async saveToHtml(e,t){if(!e||!t||typeof t!="string")return console.error("Ungültige Eingabeparameter in saveToHtml: story = ",e,", filename = ",t),!1;let n="PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImRlIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+U3RvcnktVmlld2VyPC90aXRsZT4KICAgIDxzdHlsZT4KICAgICAgICBib2R5IHsKICAgICAgICAgICAgZm9udC1mYW1pbHk6IHN5c3RlbS11aSwgc2Fucy1zZXJpZjsKICAgICAgICB9CiAgICAgICAgaDIgewogICAgICAgICAgICBjb2xvcjogIzBmMTcyYTsKICAgICAgICAgICAgbWFyZ2luLWJvdHRvbTogMC4yNXJlbTsKICAgICAgICB9CiAgICAgICAgI2dhbWUgewogICAgICAgICAgICBiYWNrZ3JvdW5kOiAjZjFmNWY5OwogICAgICAgICAgICBib3JkZXI6IDFweCBzb2xpZCAjY2JkNWUxOwogICAgICAgICAgICBwYWRkaW5nOiAxcmVtOwogICAgICAgICAgICBib3JkZXItcmFkaXVzOiA4cHg7CiAgICAgICAgICAgIG1hcmdpbjogMCBhdXRvOwogICAgICAgICAgICBtYXgtd2lkdGg6IDgwMHB4OwogICAgICAgICAgICB3aGl0ZS1zcGFjZTogcHJlLXdyYXA7CiAgICAgICAgICAgIGJveC1zaGFkb3c6IDAgNHB4IDEycHggcmdiYSgwLDAsMCwwLjA2KTsKICAgICAgICB9CiAgICAgICAgI2dhbWUgYnV0dG9uIHsKICAgICAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogIzNiODJmNjsKICAgICAgICAgICAgd2lkdGg6IDEwMCU7CiAgICAgICAgICAgIGNvbG9yOiB3aGl0ZTsKICAgICAgICAgICAgYm9yZGVyOiBub25lOwogICAgICAgICAgICBwYWRkaW5nOiAwLjZyZW0gMXJlbTsKICAgICAgICAgICAgYm9yZGVyLXJhZGl1czogNnB4OwogICAgICAgICAgICBjdXJzb3I6IHBvaW50ZXI7CiAgICAgICAgICAgIG1hcmdpbi10b3A6IDAuNXJlbTsKICAgICAgICAgICAgZm9udC13ZWlnaHQ6IDUwMDsKICAgICAgICB9CiAgICA8L3N0eWxlPgo8L2hlYWQ+Cjxib2R5Pgo8ZGl2IGlkPSJnYW1lIj48L2Rpdj4KCjxzY3JpcHQ+CiAgICBjb25zdCBzdG9yeSA9IHsKICAgICAgICAvLyBJTlNFUlQgSlNPTiBTVE9SWSBIRVJFCg==",o="ICAgIH07CgogICAgZnVuY3Rpb24gc2hvd1NjZW5lKGtleSkKICAgIHsKICAgICAgICBjb25zdCBzY2VuZSA9IHN0b3J5W2tleV07CiAgICAgICAgaWYgKCFzY2VuZSkgcmV0dXJuOwoKICAgICAgICBjb25zdCBjb250YWluZXIgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgiZ2FtZSIpOwogICAgICAgIGNvbnRhaW5lci5pbm5lckhUTUwgPSAiIjsgLy8gZGVsZXRlIHByZXZpb3VzIGNvbnRlbnQvc2NlbmUKCiAgICAgICAgY29uc3QgdGl0bGUgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCJoMiIpOwogICAgICAgIHRpdGxlLnRleHRDb250ZW50ID0ga2V5OyBjb250YWluZXIuYXBwZW5kQ2hpbGQodGl0bGUpOwoKICAgICAgICBjb25zdCB0ZXh0ID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgicCIpOwogICAgICAgIHRleHQudGV4dENvbnRlbnQgPSBzY2VuZS50ZXh0OyBjb250YWluZXIuYXBwZW5kQ2hpbGQodGV4dCk7CgogICAgICAgIGlmICghc2NlbmUuY2hvaWNlcyB8fCBzY2VuZS5jaG9pY2VzLmxlbmd0aCA9PT0gMCkgcmV0dXJuOwoKICAgICAgICBmb3IgKGNvbnN0IGMgb2Ygc2NlbmUuY2hvaWNlcykgewogICAgICAgICAgICBjb25zdCBidXR0b24gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCJidXR0b24iKTsKICAgICAgICAgICAgYnV0dG9uLnRleHRDb250ZW50ID0gYy50ZXh0OwogICAgICAgICAgICBidXR0b24uYWRkRXZlbnRMaXN0ZW5lcigiY2xpY2siLCAoKSA9PiBzaG93U2NlbmUoYy5uZXh0KSk7CiAgICAgICAgICAgIGNvbnRhaW5lci5hcHBlbmRDaGlsZChidXR0b24pOwogICAgICAgICAgICBjb250YWluZXIuYXBwZW5kQ2hpbGQoZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgiYnIiKSk7CiAgICAgICAgfQogICAgfQoKICAgIHNob3dTY2VuZSgic3RhcnQiKTsKPC9zY3JpcHQ+CjwvYm9keT4KPC9odG1sPg==",s=e.toJSON(),r=JSON.stringify(s);r=r.slice(1,-1);try{let i=window.atob(n)+r+window.atob(o),a=new Blob([i],{type:"text/html"}),u=document.createElement("a");u.href=URL.createObjectURL(a),u.download=t,u.click(),URL.revokeObjectURL(u.href),console.log("Story saved to Html")}catch(i){return console.error("Failed to save story to Json:"+i),!1}return!0}};var h=class{static generateTreeAscii(e,t=document.getElementById("tree-output")){if(!t)return;if(!e||!e.root){t.textContent="(noch kein Baum erstellt)";return}let n=d.getScenesDFS(e),o=[];for(let r=0;r<n.length;r++){let{key:i,scene:a,depth:u}=n[r],I="";for(let A=0;A<u;A++)I+=A===u-1?"|_ ":"   ";i=String(i),a===null?o.push(I+"["+i+"](MISSING)"):o.push(I+i)}let s=o.join(`
+`);t.textContent=s}};var g=new d(C);window.currentStory=null;function l(c,e,t,n="create"){if(!e)return;let o=t?"feedback-success":"feedback-error";if(n==="create"){let s=document.createElement("div");s.textContent=c,s.classList.add("feedback",o),e.appendChild(s),setTimeout(()=>s.remove(),3e3)}else n==="set"&&(e.textContent=c,e.classList.add("feedback",o))}function S(){let c=document.getElementById("choices-container");if(!c){console.error("parentElement is not found.");return}let e=document.createElement("div");e.className="choice-inputs",e.innerHTML=`
         <input type="text" class="choice-text" placeholder="Entscheidungstext">
         <input type="text" class="choice-next" placeholder="Nächste Szene (Schlüssel)">
-      `,c.appendChild(e)}function w(){let c=document.getElementById("scene-key").value.trim(),e=document.getElementById("scene-text").value.trim(),t=document.getElementById("sceneEditor");if(!c||!e){i("Bitte Schlüssel und Text ausfüllen.",t,!1);return}let n=document.querySelectorAll(".choice-inputs"),o=new Map;if(n.forEach(r=>{let l=r.querySelector(".choice-text").value.trim(),d=r.querySelector(".choice-next").value.trim();l&&d&&o.set(d,l)}),!u.addScene(new a(c,e,null,o))){i("Scene could not be added to story, key already exists.",t,!1);return}m(c),C.generateTreeAscii(u),document.getElementById("scene-key").value="",document.getElementById("scene-text").value="";let s=document.getElementById("choices-container");s.innerHTML=`<div class="choice-inputs">
+      `,c.appendChild(e)}function w(){let c=document.getElementById("scene-key").value.trim(),e=document.getElementById("scene-text").value.trim(),t=document.getElementById("sceneEditor");if(!c||!e){l("Bitte Schlüssel und Text ausfüllen.",t,!1);return}let n=document.querySelectorAll(".choice-inputs"),o=new Map;if(n.forEach(r=>{let i=r.querySelector(".choice-text").value.trim(),a=r.querySelector(".choice-next").value.trim();i&&a&&o.set(a,i)}),!g.addScene(new C(c,e,null,o))){l("Scene could not be added to story, key already exists.",t,!1);return}m(c),h.generateTreeAscii(g),document.getElementById("scene-key").value="",document.getElementById("scene-text").value="";let s=document.getElementById("choices-container");s.innerHTML=`<div class="choice-inputs">
     <input type="text" class="choice-text" placeholder="Entscheidungstext">
     <input type="text" class="choice-next" placeholder="Nächste Szene (Schlüssel)">
-    </div>`,i("Szene wurde gespeichert.",t,!0)}function m(c){let e=u.getScene(c);if(!e)return;let t=`<p><strong>${e.key}</strong>: ${e.text}</p>`;for(let[n,o]of e.choices.entries())t+=`<button disabled>${o} -> ${n}</button><br>`;document.getElementById("preview").innerHTML=t}function y(){if(!u.root){alert("Keine 'start'-Szene gefunden.");return}p("start")}function p(c){let e=document.getElementById("play-area"),t=u.getScene(c);if(!t){e.innerHTML=`<p><em>Szene '${c}' nicht gefunden.</em></p>`;return}let n=`<p><strong>${t.key}</strong>: ${t.text}</p>`;for(let[o,s]of t.choices.entries())n+=`<button onclick="renderScene('${o}')">${s}</button><br>`;e.innerHTML=n}function B(){let c=document.getElementById("scene-key"),e=document.getElementById("scene-status"),t=document.getElementById("scene-text"),n=c.value.trim(),o=t.value.trim();if(!n){i("Bitte gib den Schlüssel der zu bearbeitenden Szene ein.",e,!1);return}if(!o){i("Bitte gib den Schlüssel der zu bearbeitenden Szene ein.",e,!1);return}u.editSceneContent(n,o)&&i("Szene wurde erfolgreich bearbeitet.",e,!0)}function b(){let c=document.getElementById("scene-key"),e=c.value.trim(),t=document.getElementById("scene-status");if(!e){i("Bitte gib den Schlüssel der zu löschenden Szene ein.",t,!1);return}if(!confirm(`Soll die Szene "${e}" wirklich gelöscht werden?`))return;if(!u.removeScene(e)){i(`Keine Szene mit dem Schlüssel "${e}" gefunden.`,t,!1);return}i(`Szene "${e}" wurde erfolgreich gelöscht.`,t,!0),c.value="",document.getElementById("scene-text").value="",C.generateTreeAscii(u)}async function x(){let c=document.getElementById("json-file"),e=document.getElementById("import-status");if(!c.files.length){i("Bitte zuerst eine JSON-Datei auswählen.",e,!1);return}let t=c.files[0],n=URL.createObjectURL(t);try{if(u=await h.loadFromJson(n,a,I),!u){e.textContent="Fehler beim Laden: Story konnte nicht geladen werden.";return}window.currentStory=u,i(`"${t.name}" erfolgreich geladen (${u.scenes.size} Szenen).`,e,!0),C.generateTreeAscii(u),y()}catch(o){i("Fehler beim Laden: "+o.message,e,!1)}finally{URL.revokeObjectURL(n)}}function v(){if(!window.currentStory){i("No story available to export.",document.getElementById("import-status"),!1);return}h.saveToJson(window.currentStory,"story.json")&&i("Story successfully exported to JSON.",document.getElementById("import-status"),!0)}function k(){if(!window.currentStory){i("No story available to export.",document.getElementById("import-status"),!1);return}h.saveToHtml(window.currentStory,"story.html")&&i("Story successfully exported to HTML.",document.getElementById("import-status"),!0)}window.renderPreview=m;window.renderScene=p;window.removeScene=b;window.addEventListener("DOMContentLoaded",c=>{console.log("page is fully loaded"),document.getElementById("add-choice-field").addEventListener("click",S),document.getElementById("add-scene").addEventListener("click",w),document.getElementById("remove-scene").addEventListener("click",b),document.getElementById("edit-scene").addEventListener("click",B),document.getElementById("start-story").addEventListener("click",y),document.getElementById("btn-ascii-tree-refresh").addEventListener("click",()=>{C.generateTreeAscii(window.currentStory)}),document.getElementById("import-json").addEventListener("click",x),document.getElementById("export-json").addEventListener("click",v),document.getElementById("export-html").addEventListener("click",k)});
+    </div>`,l("Szene wurde gespeichert.",t,!0)}function m(c){let e=g.getScene(c);if(!e)return;let t=`<p><strong>${e.key}</strong>: ${e.text}</p>`;for(let[n,o]of e.choices.entries())t+=`<button disabled>${o} -> ${n}</button><br>`;document.getElementById("preview").innerHTML=t}function p(){if(!g.root){alert("Keine 'start'-Szene gefunden.");return}y("start")}function y(c){let e=document.getElementById("play-area"),t=g.getScene(c);if(!t){e.innerHTML=`<p><em>Szene '${c}' nicht gefunden.</em></p>`;return}let n=`<p><strong>${t.key}</strong>: ${t.text}</p>`;for(let[o,s]of t.choices.entries())n+=`<button onclick="renderScene('${o}')">${s}</button><br>`;e.innerHTML=n}function B(){let c=document.getElementById("scene-key"),e=document.getElementById("scene-status"),t=document.getElementById("scene-text"),n=c.value.trim(),o=t.value.trim();if(!n){l("Bitte gib den Schlüssel der zu bearbeitenden Szene ein.",e,!1);return}if(!o){l("Bitte gib den Schlüssel der zu bearbeitenden Szene ein.",e,!1);return}g.editSceneContent(n,o)&&l("Szene wurde erfolgreich bearbeitet.",e,!0)}function b(){let c=document.getElementById("scene-key"),e=c.value.trim(),t=document.getElementById("scene-status");if(!e){l("Bitte gib den Schlüssel der zu löschenden Szene ein.",t,!1);return}if(!confirm(`Soll die Szene "${e}" wirklich gelöscht werden?`))return;if(!g.removeScene(e)){l(`Keine Szene mit dem Schlüssel "${e}" gefunden.`,t,!1);return}l(`Szene "${e}" wurde erfolgreich gelöscht.`,t,!0),c.value="",document.getElementById("scene-text").value="",h.generateTreeAscii(g)}async function x(){let c=document.getElementById("json-file"),e=document.getElementById("import-status");if(!c.files.length){l("Bitte zuerst eine JSON-Datei auswählen.",e,!1);return}let t=c.files[0],n=URL.createObjectURL(t);try{if(g=await f.loadFromJson(n,C,d),!g){e.textContent="Fehler beim Laden: Story konnte nicht geladen werden.";return}window.currentStory=g,l(`"${t.name}" erfolgreich geladen (${g.scenes.size} Szenen).`,e,!0),h.generateTreeAscii(g),p()}catch(o){l("Fehler beim Laden: "+o.message,e,!1)}finally{URL.revokeObjectURL(n)}}function k(){if(!window.currentStory){l("No story available to export.",document.getElementById("import-status"),!1);return}f.saveToJson(window.currentStory,"story.json")&&l("Story successfully exported to JSON.",document.getElementById("import-status"),!0)}function v(){if(!window.currentStory){l("No story available to export.",document.getElementById("import-status"),!1);return}f.saveToHtml(window.currentStory,"story.html")&&l("Story successfully exported to HTML.",document.getElementById("import-status"),!0)}window.renderPreview=m;window.renderScene=y;window.removeScene=b;window.addEventListener("DOMContentLoaded",c=>{console.log("page is fully loaded"),document.getElementById("add-choice-field").addEventListener("click",S),document.getElementById("add-scene").addEventListener("click",w),document.getElementById("remove-scene").addEventListener("click",b),document.getElementById("edit-scene").addEventListener("click",B),document.getElementById("start-story").addEventListener("click",p),document.getElementById("btn-ascii-tree-refresh").addEventListener("click",()=>{h.generateTreeAscii(window.currentStory)}),document.getElementById("import-json").addEventListener("click",x),document.getElementById("export-json").addEventListener("click",k),document.getElementById("export-html").addEventListener("click",v)});
 //# sourceMappingURL=bundle.js.map</script>
 </body>
