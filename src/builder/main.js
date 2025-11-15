@@ -77,7 +77,6 @@ function addScene()
         showFeedback("Scene could not be added to story, key already exists.", editorSection, false);
         return;
     }
-    renderPreview(sceneKey);
     renderScene(sceneKey);
     StoryTreeRenderer.generateTreeAscii(story);
 
@@ -91,17 +90,6 @@ function addScene()
     </div>`;
 
     showFeedback(`Szene wurde gespeichert.`, editorSection, true)
-}
-
-function renderPreview(key)
-{
-    const scene = story.getScene(key);
-    if (!scene) return;
-    let html = `<p><strong>${scene.key}</strong>: ${scene.text}</p>`;
-    for (const [next, text] of scene.choices.entries()) {
-        html += `<button disabled>${text} -> ${next}</button><br>`
-    }
-    document.getElementById('preview').innerHTML = html;
 }
 
 function startStory()
@@ -132,8 +120,8 @@ function renderScene(key)
     const sceneTitle = document.createElement('p');
     const sceneKeyStrong = document.createElement('strong');
     sceneKeyStrong.textContent = key;
-    sceneTitle.appendChild(sceneKeyStrong);
-    sceneTitle.textContent += ": " + scene.text;
+    sceneTitle.append(sceneKeyStrong, ": " + scene.text);
+
     area.appendChild(sceneTitle);
 
     for (const [next, text] of scene.choices.entries()) {
@@ -162,6 +150,7 @@ function editScene() {
     }
     let success = story.editSceneContent(key, text);
     if(success){
+        renderScene(key);
         showFeedback(`Szene wurde erfolgreich bearbeitet.`, status, true);
     }
 }
@@ -182,6 +171,8 @@ function removeScene(){
         showFeedback(`Keine Szene mit dem Schlüssel "${key}" gefunden.`, status, false);
         return;
     }
+
+    renderScene(story.root.key);
     showFeedback(`Szene "${key}" wurde erfolgreich gelöscht.`, status, true);
     keyInput.value = "";
     document.getElementById("scene-text").value = "";
@@ -247,12 +238,11 @@ function exportToHtml() {
 }
 
 // make helper functions available for onclick to HTML file
-window.renderPreview = renderPreview;
 window.renderScene = renderScene;
 window.removeScene = removeScene;
 
 // Register functions
-window.addEventListener("DOMContentLoaded", (event) => {
+window.addEventListener("DOMContentLoaded", () => {
     console.log("page is fully loaded");
     document.getElementById('add-choice-field').addEventListener('click', addChoiceField);
     document.getElementById('add-scene').addEventListener('click', addScene);
