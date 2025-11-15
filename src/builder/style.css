@@ -10,6 +10,17 @@
     --color-error: #9b2c2c;
 }
 
+:root[data-theme="warm"] {
+    --color-text: #3a2f2a;
+    --color-background: #faf5f1;
+    --color-highlight-background: #eee4dd;
+    --color-foreground: #b48a76;
+    --color-accent: #d4a98c;
+
+    --color-success: #3c6f57;
+    --color-error: #9a4a3f;
+}
+
 body {
     font-family: system-ui, sans-serif;
     margin: 2rem;

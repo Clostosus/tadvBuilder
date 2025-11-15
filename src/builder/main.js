@@ -249,6 +249,14 @@ function exportToHtml() {
     if(success) showFeedback("Story successfully exported to HTML.", document.getElementById("import-status"), true);
 }
 
+function applyTheme(theme) {
+    if (theme === "default") {
+        document.documentElement.removeAttribute("data-theme");
+    } else {
+        document.documentElement.setAttribute("data-theme", theme);
+    }
+}
+
 // make helper functions available for onclick to HTML file
 window.renderScene = renderScene;
 window.removeScene = removeScene;
@@ -270,4 +278,9 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("import-json").addEventListener("click", importStory);
     document.getElementById("export-json").addEventListener("click", exportToJson);
     document.getElementById("export-html").addEventListener("click", exportToHtml);
+
+    // --- Design
+    document.getElementById("theme-select").addEventListener("change", function() {
+        applyTheme(this.value);
+    });
 });
