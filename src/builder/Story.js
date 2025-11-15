@@ -98,9 +98,9 @@ export default class Story {
      * @param {Scene} [startScene=this.root]
      * @returns {Array<SceneRef>} Array of { key, scene, depth }
      */
-    static getScenesDFS(story, startScene = this.root)
+    static getScenesDFS(story, startScene = story.root)
     {
-        if (!startScene) return [];
+        if (!story || !startScene) return [];
         /** @type {Array<SceneRef>} */
         const result = [];
         const stack = [];
@@ -112,29 +112,55 @@ export default class Story {
         }
         stack.push({ scene: startScene, depth: baseDepth });
 
+        // Use stack-based DFS traversal
         while (stack.length > 0) {
             const { scene, depth } = stack.pop();
 
+            // Skip already visited scenes to avoid revisiting and infloop
             if(visited.has(scene.key)){ continue; }
             visited.add(scene.key);
             result.push({ key: scene.key, scene: scene,depth: depth });
 
-            const children = [];
-            for (const [next] of scene.choices.entries()) {
-                const child = story.getScene(next);
-                if (child) {
-                    children.push(child);
-                }else {
-                    result.push({key: next,scene: null,depth: depth + 1});
-                }
-            }
-
-            // reverse order to get initial order
+            // Add children to the stack in reverse order to maintain DFS order
+            const children = Array.from(scene.choices.keys())
+                .map(key => story.getScene(key))
+                .filter(child => child && !visited.has(child.key));
+            // Push in reverse order
             for (let i = children.length - 1; i >= 0; i--) {
                 stack.push({ scene: children[i], depth: depth + 1 });
             }
         }
         return result;
+    }
+
+    /**
+     * Checks if the story has a circle in the scene graph.
+     * @param {Story} story - The story instance containing the scenes.
+     * @returns {boolean} True if a cycle is found, false otherwise.
+     */
+    static hasCircle(story){
+        const visited = new Set();  // Set to track fully visited nodes
+        const scenes = Story.getScenesDFS(story);
+
+        // Iterate over the DFS results
+        for (const { scene } of scenes) {
+            if (!scene) continue;
+
+            // Check each scene's choices to see if we revisit a scene in the same DFS path
+            for (const nextKey of scene.choices.keys()) {
+                const nextScene = story.getScene(nextKey);
+                if (nextScene && visited.has(nextScene.key)) {
+                    // Cycle detected: revisited a scene already fully visited
+                    return true;
+                }
+            }
+
+            // Mark the current scene as fully visited
+            visited.add(scene.key);
+        }
+
+        // No cycles found
+        return false;
     }
 
     /* Content means the story text of the scene itself, and the description texts of the choices in this scene.
