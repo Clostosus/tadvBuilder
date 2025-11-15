@@ -137,6 +137,7 @@ function editScene() {
     const keyInput = document.getElementById("scene-key");
     const status = document.getElementById("scene-status");
     const textInput = document.getElementById("scene-text");
+    const choicesContainer = document.getElementById("choices-container");
     const key = keyInput.value.trim();
     const text = textInput.value.trim();
 
@@ -144,11 +145,22 @@ function editScene() {
         showFeedback("Bitte gib den Schlüssel der zu bearbeitenden Szene ein.", status, false);
         return;
     }
-    if(!text){
-        showFeedback("Bitte gib den Schlüssel der zu bearbeitenden Szene ein.", status, false);
-        return;
+
+    let choices = new Map();
+    for (const el of choicesContainer.children) {
+        if(! el.classList.contains('choice-inputs')) continue;
+
+        let choiceTextInput = el.querySelector(".choice-text");
+        let choiceKeyInput  = el.querySelector(".choice-next");
+
+        if(! choiceTextInput || ! choiceKeyInput
+            || ! (choiceTextInput instanceof HTMLInputElement) || ! (choiceKeyInput instanceof HTMLInputElement)) {
+            console.log("Error in editScene: Invalid choice input elements. Skipping choice.");
+        }
+        choices.set(choiceKeyInput.value.trim(),choiceTextInput.value.trim());
     }
-    let success = story.editSceneContent(key, text);
+
+    let success = story.editSceneContent(key, text, choices);
     if(success){
         renderScene(key);
         showFeedback(`Szene wurde erfolgreich bearbeitet.`, status, true);
