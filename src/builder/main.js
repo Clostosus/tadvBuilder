@@ -117,15 +117,32 @@ function renderScene(key)
 {
     const area = document.getElementById('play-area');
     const scene = story.getScene(key);
+    area.innerHTML = ''; // clear previous content
+
     if (!scene) {
-        area.innerHTML = `<p><em>Szene '${key}' nicht gefunden.</em></p>`;
+        const errorMessage = document.createElement('p');
+        const em = document.createElement('em');
+        em.textContent = "Szene \'" + key + "' nicht gefunden.";
+        errorMessage.appendChild(em);
+        area.textContent = '';  // Clear previous content
+        area.appendChild(errorMessage);
         return;
     }
-    let html = `<p><strong>${scene.key}</strong>: ${scene.text}</p>`;
+
+    const sceneTitle = document.createElement('p');
+    const sceneKeyStrong = document.createElement('strong');
+    sceneKeyStrong.textContent = key;
+    sceneTitle.appendChild(sceneKeyStrong);
+    sceneTitle.textContent += ": " + scene.text;
+    area.appendChild(sceneTitle);
+
     for (const [next, text] of scene.choices.entries()) {
-        html += `<button onclick="renderScene('${next}')">${text}</button><br>`
+        const button = document.createElement('button');
+        button.textContent = text;
+        button.onclick = () => renderScene(next);
+        area.appendChild(button);
+        area.appendChild(document.createElement('br'));
     }
-    area.innerHTML = html;
 }
 
 function editScene() {
