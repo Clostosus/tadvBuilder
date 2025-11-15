@@ -4,7 +4,6 @@ import SaveLoad from "./SaveLoad.js";
 import StoryTreeRenderer from './StoryTreeRenderer.js';
 
 let story = new Story(Scene);
-window.currentStory = null;
 
 /**
  * Displays a temporary feedback message in the UI.
@@ -79,6 +78,7 @@ function addScene()
         return;
     }
     renderPreview(sceneKey);
+    renderScene(sceneKey);
     StoryTreeRenderer.generateTreeAscii(story);
 
     // Eingabefelder leeren
@@ -192,7 +192,6 @@ async function importStory() {
             importStatus.textContent = "Fehler beim Laden: Story konnte nicht geladen werden.";
             return;
         }
-        window.currentStory = story;
         showFeedback(`"${file.name}" erfolgreich geladen (${story.scenes.size} Szenen).`, importStatus, true);
 
         StoryTreeRenderer.generateTreeAscii(story);
@@ -209,11 +208,11 @@ async function importStory() {
  * @returns void
  */
 function exportToJson() {
-    if (!window.currentStory) {
+    if (!story) {
         showFeedback("No story available to export.", document.getElementById("import-status"), false);
         return;
     }
-    let success = SaveLoad.saveToJson(window.currentStory, "story.json");
+    let success = SaveLoad.saveToJson(story, "story.json");
     if(success) showFeedback("Story successfully exported to JSON.", document.getElementById("import-status"), true);
 }
 
@@ -222,11 +221,11 @@ function exportToJson() {
  * @returns void
  */
 function exportToHtml() {
-    if (!window.currentStory) {
+    if (!story) {
         showFeedback("No story available to export.", document.getElementById("import-status"), false);
         return;
     }
-    let success = SaveLoad.saveToHtml(window.currentStory, "story.html");
+    let success = SaveLoad.saveToHtml(story, "story.html");
     if(success) showFeedback("Story successfully exported to HTML.", document.getElementById("import-status"), true);
 }
 
@@ -245,7 +244,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
     document.getElementById('start-story').addEventListener('click', startStory);
     document.getElementById("btn-ascii-tree-refresh").addEventListener("click", () => {
-        StoryTreeRenderer.generateTreeAscii(window.currentStory);
+        StoryTreeRenderer.generateTreeAscii(story);
     });
 
     // --- JSON Import/Export Button Events ---

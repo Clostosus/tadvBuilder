@@ -8,6 +8,7 @@ export default class StoryTreeRenderer {
      * @param {HTMLElement} parentElement Element inside which the output will be inserted.
      */
     static generateTreeAscii(story,parentElement = document.getElementById('tree-output')) {
+        console.log("StoryTreeRenderer.generateTreeAscii. Parent: " + parentElement.id + " Story: " + story.root.key);
         if (!parentElement) return;
         if (!story || !story.root) {
             parentElement.textContent = '(noch kein Baum erstellt)';
