@@ -2,6 +2,10 @@
  * Represents a single scene (node) in the story tree.
  * Each scene has narrative text, a list of choices (edges to other scenes),
  * and a reference to its parent scene. The root scene has a null parent.
+ * @property {string} key - Unique identifier for the scene.
+ * @property {string} text - Narrative text for the scene.
+ * @property {Scene|null} parent - Reference to the parent scene, or null for root.
+ * @property {Map<string, string>} choices - Map of next scene keys to their descriptions.
  */
 export default class Scene {
     /**

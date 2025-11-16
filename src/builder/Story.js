@@ -188,6 +188,49 @@ export default class Story {
     }
 
     /**
+     * Updates the choices of a scene. Does no check for circles.
+     * @param key
+     * @param newChoices
+     * @returns {boolean}
+     */
+    editSceneChoices(key, newChoices)
+    {
+        let scene = this.scenes.get(key);
+        if(!scene){
+            console.warn(`Scene ${key} not found`);
+            return false;
+        }
+        scene.choices = new Map(newChoices);
+        return true;
+    }
+
+    /**
+     * Changes the parent of a scene.
+     * @param {string} key - Scene key to change.
+     * @param {string} newParentKey - New parent key.
+     * @returns {boolean} True if parent changed successfully, false if not found or invalid parent.
+     */
+    changeSceneParent(key, newParentKey)
+     {
+         let scene = this.scenes.get(key);
+         if(!scene){
+             console.warn(`Scene ${key} not found`);
+         }
+
+         let oldParentChoiceText = scene.parent.choices.get(scene.key).text;
+         scene.parent.removeChoice(scene.key);
+
+         const newParent = this.scenes.get(newParentKey);
+         if(! newParent){
+             scene.parent = null;
+             return false;
+         }
+         scene.parent = newParent;
+         newParent.addChoice(oldParentChoiceText || `to ${scene.key}`, scene.key);
+         return true;
+     }
+
+    /**
      * Deletes a scene by key. Also deletes parent scene choices referencing this scene
      * and recursively removes child scenes of this scene.
      * @param {string} key

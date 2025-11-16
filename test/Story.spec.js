@@ -223,3 +223,96 @@ describe("Test cycle detection", () => {
         expect(Story.hasCircle(story)).toBe(true);
     });
 });
+
+describe("Test editSceneChoices method", () => {
+    let story;
+
+    beforeEach(() => {
+        // Reset the story before each test
+        story = new Story(Scene);
+    });
+
+    it("should update choices for an existing scene", () => {
+        const sceneA = new Scene("A", "Root Scene");
+        story.addScene(sceneA);
+        story.root = sceneA;
+
+        const newChoices = new Map([["choice1", "option1"], ["choice2", "option2"]]);
+        const result = story.editSceneChoices("A", newChoices);
+
+        expect(result).toBe(true);
+        expect(sceneA.choices).toEqual(newChoices);
+    });
+
+    it("should return false for a non-existent scene", () => {
+        const newChoices = new Map([["choice1", "option1"]]);
+        const result = story.editSceneChoices("Z", newChoices);
+
+        expect(result).toBe(false);
+    });
+
+    it("should update choices to an empty map if provided", () => {
+        const sceneA = new Scene("A", "Root Scene");
+        story.addScene(sceneA);
+        story.root = sceneA;
+
+        const newChoices = new Map();
+        const result = story.editSceneChoices("A", newChoices);
+
+        expect(result).toBe(true);
+        expect(sceneA.choices).toEqual(newChoices);
+    });
+});
+
+describe("Test changeSceneParent method", () => {
+    let story;
+
+    beforeEach(() => {
+        // Reset the story before each test
+        story = new Story(Scene);
+    });
+
+    it("should change the parent of an existing scene to another existing scene", () => {
+        const sceneA = new Scene("A", "Root Scene");
+        const sceneB = new Scene("B", "Child Scene");
+        sceneA.addChoice("to B", "B");
+        story.addScene(sceneA);
+        story.addScene(sceneB);
+        story.root = sceneA;
+
+        story.changeSceneParent("B", "A");
+
+        expect(sceneB.parent).toBe(sceneA);
+        expect(sceneA.choices.get("B")).toBe("to B");
+    });
+
+    it("should set parent to null if new parent does not exist", () => {
+        const sceneA = new Scene("A", "Root Scene");
+        const sceneB = new Scene("B", "Child Scene");
+        story.addScene(sceneA);
+        story.addScene(sceneB);
+        story.root = sceneA;
+        sceneB.parent = sceneA;  // Initial parent
+
+        story.changeSceneParent("B", "Z");
+
+        expect(sceneB.parent).toBe(null);
+    });
+
+    it("should update parent-child relationships correctly", () => {
+        const sceneA = new Scene("A", "Root Scene");
+        const sceneB = new Scene("B", "Child Scene");
+        const sceneC = new Scene("C", "Grandchild Scene");
+        sceneA.addChoice("to B", "B");
+        sceneB.addChoice("to C", "C");
+        story.addScene(sceneA);
+        story.addScene(sceneB);
+        story.addScene(sceneC);
+
+        story.changeSceneParent("C", "A");
+
+        expect(sceneC.parent).toBe(sceneA);
+        expect(sceneA.choices.get("C")).toBe("to C");
+        expect(sceneB.choices).not.toContain("C");
+    });
+});
