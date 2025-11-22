@@ -2,6 +2,7 @@ import AsciiTreeRenderer from "./AsciiTreeRenderer.js";
 import Feedback from "./Feedback.js";
 import SceneRenderer from "./SceneRenderer.js";
 import Scene from "./core/Scene.js";
+import Story from "./core/Story.js";
 
 /**
  * Editor used by the form-based story builder.

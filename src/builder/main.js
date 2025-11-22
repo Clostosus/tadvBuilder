@@ -5,6 +5,7 @@ import AsciiTreeRenderer from './AsciiTreeRenderer.js';
 import FormEditor from './FormEditor.js';
 import SceneRenderer from './SceneRenderer.js';
 import Feedback from './Feedback.js';
+import TreeEditor from './TreeEditor.js';
 
 let story = new Story(Scene);
 let formEditor = new FormEditor(story, Scene);
@@ -44,6 +45,8 @@ async function importStory() {
         Feedback.show(`"${file.name}" erfolgreich geladen (${story.scenes.size} Szenen).`, importStatus, true);
 
         AsciiTreeRenderer.generateTreeAscii(story);
+        // Nach externen Aktionen (z. B. Import) auch den Tree‑Editor aktualisieren
+        TreeEditor.render(story);
         startStory();
     } catch (err) {
         Feedback.show("Fehler beim Laden: " + err.message, importStatus, false);
@@ -102,6 +105,10 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btn-ascii-tree-refresh").addEventListener("click", () => {
         AsciiTreeRenderer.generateTreeAscii(story);
     });
+    const btnHtmlTree = document.getElementById('btn-html-tree-refresh');
+    if (btnHtmlTree) {
+        btnHtmlTree.addEventListener('click', () => TreeEditor.render(story));
+    }
 
     // --- JSON Import/Export Button Events ---
     document.getElementById("import-json").addEventListener("click", importStory);

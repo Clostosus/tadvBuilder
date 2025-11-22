@@ -134,3 +134,50 @@ button:hover {
 #play-area button {
     margin-top: 0.5rem;
 }
+
+/* TreeEditor styles */
+.story-tree {
+    list-style: none;
+    padding-left: 0.75rem;
+}
+.tree-node-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    position: relative;
+}
+.tree-node {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+.tree-node-preview {
+    opacity: 0.7;
+    font-style: italic;
+}
+.tree-toggle, .tree-delete {
+    min-width: 1.5rem;
+    height: 1.5rem;
+    padding: 0 0.25rem;
+    line-height: 1.2rem;
+}
+.tree-toggle-spacer {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.tree-delete {
+    visibility: hidden; /* only show on hover */
+    background-color: transparent;
+    color: var(--color-text);
+    border: 1px solid transparent;
+    margin-left: 0.25rem;
+}
+.tree-node-header:hover .tree-delete {
+    visibility: visible;
+    border-color: var(--color-foreground);
+}
+.tree-edge {
+    color: var(--color-text);
+    opacity: 0.8;
+}
