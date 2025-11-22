@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' http://localhost:63342/; object-src 'none';">
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:63342/; object-src 'none';">
   <title>Jasmine Test Runner v5.12.0</title>
 
   <link rel="shortcut icon" type="image/png" href="lib/jasmine-5.12.0/jasmine_favicon.png">
@@ -18,8 +18,8 @@
 <body>
     <!-- include source files here... -->
     <script type="module">
-        import Scene from "./src/builder/Scene.js";
-        import Story from "./src/builder/Story.js";
+        import Scene from "./src/builder/core/Scene.js";
+        import Story from "./src/builder/core/Story.js";
         import SaveLoad from "./src/builder/SaveLoad.js";
     </script>
 

@@ -1,5 +1,5 @@
-import Scene from "../src/builder/Scene.js";
-import Story from "../src/builder/Story.js";
+import Scene from "../src/builder/core/Scene.js";
+import Story from "../src/builder/core/Story.js";
 
 describe("Test getSceneDepth method", () => {
     let story;

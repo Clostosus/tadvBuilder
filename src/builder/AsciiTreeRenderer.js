@@ -1,6 +1,6 @@
-import Story from "./Story.js";
+import Story from "./core/Story.js";
 
-export default class StoryTreeRenderer {
+export default class AsciiTreeRenderer {
     /**
      * Generates the story tree as an ASCII-style string.
      * Marks missing (unresolved) scenes explicitly.
