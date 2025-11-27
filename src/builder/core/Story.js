@@ -1,3 +1,4 @@
+import Scene from "./Scene.js";
 /**
  * Represents the entire story as an object-oriented tree of scenes.
  * Controls all scenes and ensures proper parent-child relationships.
@@ -274,19 +275,14 @@ export default class Story {
     /**
      * Creates a new Story instance from a JSON Object.
      * @param {Object} parsedJson
-     * @param {Class} SceneClass
      * @returns {Story | null} New Scene instance or null if parsing fails.
      */
-    static fromJson(parsedJson, SceneClass) {
+    static fromJson(parsedJson) {
         if (!parsedJson || typeof parsedJson !== 'object') { return null; }
-        if (typeof SceneClass.fromJson !== 'function') {
-            console.warn('SceneClass has no method called: fromJson');
-            return null;
-        }
 
-        let story = new Story(SceneClass);
+        let story = new Story(Scene);
         for (const [key, value] of Object.entries(parsedJson)) {
-            const scene = SceneClass.fromJson(key, value);
+            const scene = Scene.fromJson(key, value);
             if (scene) {
                 story.addScene(scene);
             }else{

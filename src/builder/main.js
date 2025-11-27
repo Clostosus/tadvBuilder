@@ -70,14 +70,20 @@ function exportToJson() {
 
 /**
  * Exports the current story to an HTML file.
+ * @param boolean asEncrypted
  * @returns void
  */
-function exportToHtml() {
+function exportToHtml(asEncrypted) {
     if (!story) {
         Feedback.show("No story available to export.", document.getElementById("import-status"), false);
         return;
     }
-    let success = SaveLoad.saveToHtml(story, "story.html");
+    let success = false;
+    if(asEncrypted) {
+        success = SaveLoad.saveToEncryptedHtml(story, "story.html","9oj7k&7C@b@W");
+    }else{
+        success = SaveLoad.saveToHtml(story, "story.html");
+    }
     if(success) Feedback.show("Story successfully exported to HTML.", document.getElementById("import-status"), true);
 }
 
@@ -113,7 +119,10 @@ window.addEventListener("DOMContentLoaded", () => {
     // --- JSON Import/Export Button Events ---
     document.getElementById("import-json").addEventListener("click", importStory);
     document.getElementById("export-json").addEventListener("click", exportToJson);
-    document.getElementById("export-html").addEventListener("click", exportToHtml);
+    document.getElementById("export-html").addEventListener("click", () => {
+        const protectStory = document.getElementById("export-antiscraping-check").checked;
+        exportToHtml(protectStory);
+    });
 
     // --- Design
     document.getElementById("theme-select").addEventListener("change", function() {

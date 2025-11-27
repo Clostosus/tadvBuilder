@@ -65,6 +65,12 @@ button {
 button:hover {
     background-color: var(--color-accent);
 }
+input[type="checkbox"] {
+    margin-right: 0.5em;
+    width: 1.2em;
+    height: 1.2em;
+}
+
 .section {
     background: var(--color-background);;
     border-radius: 12px;
@@ -120,6 +126,16 @@ button:hover {
     color: var(--color-text);
     font-weight: normal;
     font-size: 1.2rem;
+}
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.checkbox-container label {
+    margin: 0;
+    font-weight: normal;
 }
 
 #output, #preview, #play-area, #tree-output {

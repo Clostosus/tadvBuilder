@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Obfuscated Story-Viewer</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+        }
+        h2 {
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+        }
+        #game {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0 auto;
+            max-width: 800px;
+            white-space: pre-wrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        #game button {
+            background-color: #3b82f6;
+            width: 100%;
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+<div id="game"></div>
+
+<script>
+    // === config ===
+    const ENCRYPTED_STORY = "";
+    const DECRYPTION_KEY = "9oj7k&7C@b@W";
+
+    let story = null;
+
+    function showScene(key)
+    {
+        const scene = story[key];
+        if (!scene) return;
+
+        const container = document.getElementById("game");
+        container.innerHTML = ""; // delete previous content/scene
+
+        const title = document.createElement("h2");
+        title.textContent = key; container.appendChild(title);
+
+        const text = document.createElement("p");
+        text.textContent = scene.text; container.appendChild(text);
+
+        if (!scene.choices || scene.choices.length === 0) return;
+
+        for (const c of scene.choices) {
+            const button = document.createElement("button");
+            button.textContent = c.text;
+            button.addEventListener("click", () => showScene(c.next));
+            container.appendChild(button);
+            container.appendChild(document.createElement("br"));
+        }
+    }
+
+    // XOR decryption with position mixing
+    function decryptStory(encryptedHex, key) {
+        if(!encryptedHex || encryptedHex.length === 0) {
+            console.error("Encrypted story or key not found.");
+            return null;
+        }
+        try {
+            // Hex decode
+            const encrypted = new Uint8Array(encryptedHex.length / 2);
+            let byteIndex = 0;
+            for (let i = 0; i < encryptedHex.length; i += 2) {
+                encrypted[byteIndex++] = parseInt(encryptedHex.slice(i, i + 2), 16);
+            }
+
+            const keyBytes = new TextEncoder().encode(key);
+
+            const decrypted = new Uint8Array(encrypted.length);
+            for (let i = 0; i < encrypted.length; i++) {
+                decrypted[i] = encrypted[i] ^ keyBytes[i % keyBytes.length] ^ (i & 0xFF);
+            }
+
+            const jsonString = new TextDecoder().decode(decrypted);
+            return JSON.parse(jsonString);
+        } catch (e) {
+            console.error("Decryption of story failed:", e);
+            return null;
+        }
+    }
+
+    // Initialize game with async/await
+    async function initializeGame() {
+        console.log("Initializing game...");
+
+        story = await decryptStory(ENCRYPTED_STORY, DECRYPTION_KEY);
+        story = JSON.parse(story);
+
+        if (!story) {
+            const container = document.getElementById("game");
+            container.innerHTML = "<p>Error: Could not load the story.</p>";
+            return;
+        }
+
+        console.log("Displaying first scene...");
+        showScene("start");
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeGame().catch(error => {
+            console.error("Error initializing game:", error);
+            const container = document.getElementById("game");
+            container.innerHTML = "<p>An error occurred. Please check the console for details.</p>";
+        });
+    });
+
+    story = decryptStory(ENCRYPTED_STORY, DECRYPTION_KEY);
+    showScene("start");
+</script>
+</body>
+</html>

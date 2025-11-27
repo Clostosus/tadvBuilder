@@ -70,4 +70,20 @@ describe("Test export", () => {
         let saved = await SaveLoad.saveToJson(null, "undefined-story.html");
         expect(saved).toBe(false);
     });
+
+    it("shall export a encrypted story as html", async () => {
+        let story = new Story(Scene);
+
+        ERIK_STORY_DATA.forEach(sceneData => {
+            const parentScene = sceneData.parentKey ? story.getScene(sceneData.parentKey) : null;
+            const scene = new Scene(sceneData.key, sceneData.text, parentScene);
+            if (sceneData.choices) {
+                sceneData.choices.forEach(choice => {
+                    scene.addChoice(choice.text, choice.next);
+                });
+            }
+            story.addScene(scene);
+        });
+        let saved = await SaveLoad.saveToEncryptedHtml(story, "encrypted-story.html", "9oj7k&7C@b@W");
+    })
 })
