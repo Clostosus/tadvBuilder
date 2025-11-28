@@ -1,0 +1,64 @@
+{   
+    "start": {
+      "text": "Du erwachst in einem kreisförmigen Steinkreis. Nebel zieht über den Boden, und sieben leuchtende Tore stehen ringsum.",
+      "choices": [
+        { "text": "Zum Tor aus Gold gehen", "next": "2"},
+        { "text": "Das silberne Tor berühren", "next": "3" },
+        { "text": "Sitzen bleiben und warten", "next": "7" }
+      ]
+    },
+
+    "2": {
+      "text": "Hinter dem goldenen Tor liegt eine endlose Halle voller schwebender Erinnerungsfragmente.",
+      "choices": [
+        { "text": "Ein Fragment deiner Kindheit berühren", "next": "4" },
+        { "text": "Die Halle weiter entlanggehen", "next": "5" },
+        { "text": "Umkehren", "next": "start" }
+      ]
+    },
+
+    "3": {
+      "text": "Du trittst in ein Labyrinth aus lebendigem Silber, das sich ständig verändert.",
+      "choices": [
+        { "text": "Dem singenden Echo folgen", "next": "5" },
+        { "text": "Die Wände berühren", "next": "6" },
+        { "text": "Den Eingang suchen", "next": "start" }
+      ]
+    },
+
+    "4": {
+      "text": "Ein stiller See spiegelt nicht die Umgebung wider, sondern deine innersten Wünsche.",
+      "choices": [
+        { "text": "In den See greifen", "next": "6" },
+        { "text": "Über das Wasser gehen", "next": "7" },
+        { "text": "Zum goldenen Tor zurück", "next": "2" }
+      ]
+    },
+
+    "5": {
+      "text": "Ein Raum mit sieben Türen – jede hat eine andere Farbe. Die Luft knistert vor Energie.",
+      "choices": [
+        { "text": "Die rote Tür öffnen", "next": "6" },
+        { "text": "Die blaue Tür öffnen", "next": "3" },
+        { "text": "Die schwarze Tür öffnen", "next": "7" }
+      ]
+    },
+
+    "6": {
+      "text": "Drei steinerne Wächter erwachen, sobald du den Raum betrittst. Ihre Augen leuchten.",
+      "choices": [
+        { "text": "Mit ihnen sprechen", "next": "2" },
+        { "text": "Eine Prüfung annehmen", "next": "7" },
+        { "text": "Fliehen", "to": "5" }
+      ]
+    },
+
+    "7": {
+      "text": "Du stehst wieder im Steinkreis – aber diesmal brennen die Tore heller. Du spürst, dass sich die Welt verändert hat.",
+      "choices": [
+        { "text": "Zum silbernen Tor gehen", "next": "3" },
+        { "text": "Zum goldenen Tor gehen", "next": "2" },
+        { "text": "Den Zyklus durchbrechen", "next": "END" }
+      ]
+    }
+}
