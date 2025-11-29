@@ -1,5 +1,4 @@
 import Scene from "./Scene.js";
-import Scene from "./Scene";
 
 /**
  * Represents the entire story as an object-oriented tree of scenes.
