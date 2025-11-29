@@ -26,7 +26,7 @@ const ERIK_STORY_DATA = [
 
 describe("Test import", () => {
     it("load a story from json file", async () => {
-        let story = await SaveLoad.loadFromJson("../examples/EriksEigenheim.json", Scene, Story);
+        let story = await SaveLoad.loadFromJson("../examples/EriksEigenheim.json");
 
         expect(story).toBeDefined();
         expect(story).not.toBeNull();

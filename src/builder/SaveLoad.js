@@ -1,3 +1,5 @@
+import Story from "./Story";
+
 export default class SaveLoad {
     constructor() {
         throw new Error('Static class');
@@ -6,11 +8,9 @@ export default class SaveLoad {
     /**
      * Builds the story tree from plain JSON text.
      * @param {string} filename
-     * @param {Class} SceneClass
-     * @param {Class} StoryClass
      * @returns {Story | null | Promise<string>} Returns new story,null deserialization fails, or Promise<string> if loading fails.
      */
-    static async loadFromJson(filename,SceneClass, StoryClass)
+    static async loadFromJson(filename)
     {
         if (!filename || typeof filename !== 'string') {
             return null;
@@ -26,11 +26,11 @@ export default class SaveLoad {
             return null;
         }
 
-        if (typeof StoryClass.fromJson !== 'function') {
-            console.warn('StoryClass has no method called: fromJson');
+        if (typeof Story.fromJson !== 'function') {
+            console.warn('Story has no method called: fromJson');
             return null;
         }
-        return StoryClass.fromJson(data,SceneClass);
+        return Story.fromJson(data);
     }
 
     /**

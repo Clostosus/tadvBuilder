@@ -1,4 +1,6 @@
 import Scene from "./Scene.js";
+import Scene from "./Scene";
+
 /**
  * Represents the entire story as an object-oriented tree of scenes.
  * Controls all scenes and ensures proper parent-child relationships.
@@ -7,11 +9,9 @@ import Scene from "./Scene.js";
 export default class Story {
     /**
      * @constructor
-     * @param {Class} sceneClass - Class representing a Scene.
      */
-    constructor(sceneClass)
+    constructor()
     {
-        this.sceneClass = sceneClass;
         this.scenes = new Map(); // key -> Scene
         this.root = null;        // start scene
     }
@@ -23,7 +23,6 @@ export default class Story {
      */
     addScene(scene)
     {
-        if (!(scene instanceof this.sceneClass)) return false;
         if (this.scenes.has(scene.key)) return false;
 
         this.scenes.set(scene.key, scene);
