@@ -70,8 +70,8 @@ function exportToJson() {
 
 /**
  * Exports the current story to an HTML file.
- * @param boolean asEncrypted
  * @returns void
+ * @param asEncrypted
  */
 function exportToHtml(asEncrypted) {
     if (!story) {

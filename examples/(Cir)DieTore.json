@@ -60,5 +60,9 @@
         { "text": "Zum goldenen Tor gehen", "next": "2" },
         { "text": "Den Zyklus durchbrechen", "next": "END" }
       ]
+    },
+    "END": {
+      "text": "Das Ende ist erreicht. Du hast den Zyklus durchbrochen, aber es ist nicht das Ende deiner Reise. Ein neues Tor öffnet sich in der Ferne – ein neues Abenteuer wartet. Doch du bist nicht mehr dieselbe Person, die du einst warst.",
+      "choices": []
     }
 }
