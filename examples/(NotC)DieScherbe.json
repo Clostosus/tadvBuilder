@@ -1,0 +1,80 @@
+{   
+    "start": {
+      "text": "Ein gewaltiger Sturm nähert sich deinem Dorf. Am Horizont glimmt ein seltsamer grüner Funke.",
+      "choices": [
+        { "text": "Zum Funken laufen", "next": "2"},
+        { "text": "Die Dorfbewohner warnen", "next": "3" },
+        { "text": "Das Dorf verlassen", "next": "4" }
+      ]
+    },
+
+    "2": {
+      "text": "Der Funke entpuppt sich als schimmernde Scherbe eines uralten Kristalls. Sie vibriert leicht in deiner Hand.",
+      "choices": [
+        { "text": "Die Scherbe behalten", "next": "5" },
+        { "text": "Sie einem Gelehrten zeigen", "next": "6" },
+        { "text": "Sie liegen lassen", "next": "7" }
+      ]
+    },
+
+    "3": {
+      "text": "Die Dorfbewohner nehmen dich nicht ernst. Der Sturm rückt näher und du musst schnell handeln.",
+      "choices": [
+        { "text": "Zu den Wächtern gehen", "next": "5" },
+        { "text": "Allein auf den Turm steigen", "next": "6" },
+        { "text": "Fliehen, bevor es zu spät ist", "next": "4" }
+      ]
+    },
+
+    "4": {
+      "text": "Du verlässt das Dorf und schlägst dich durch den dunklen Wald. Etwas folgt dir zwischen den Bäumen.",
+      "choices": [
+        { "text": "Schneller laufen", "next": "7" },
+        { "text": "Dich stellen", "next": "6" },
+        { "text": "Einen Umweg nehmen", "next": "5" }
+      ]
+    },
+
+    "5": {
+      "text": "Eine Stimme spricht in deinem Kopf – die Scherbe, der Sturm, das Dorf: alles hängt zusammen.",
+      "choices": [
+        { "text": "Der Stimme folgen", "next": "6" },
+        { "text": "Dich dagegen wehren", "next": "7" },
+        { "text": "Die Scherbe zerstören", "next": "END_BAD" }
+      ]
+    },
+
+    "6": {
+      "text": "Der Sturm formt sich zu einem riesigen astralen Wesen – dem Morgenstern. Die Scherbe ist ein Teil seines Herzens.",
+      "choices": [
+        { "text": "Die Scherbe einsetzen", "next": "END_GOOD" },
+        { "text": "Mit dem Wesen verhandeln", "next": "END_NEUTRAL" },
+        { "text": "Fliehen", "next": "END_BAD" }
+      ]
+    },
+
+    "7": {
+      "text": "Der Sturm entfesselt sein volles Chaos. Die Welt bebt und das Unheil bricht sich Bahn.",
+      "choices": [
+        { "text": "Dich opfern, um den Sturm aufzuhalten", "next": "END_HEROIC" },
+        { "text": "Den Sturm beobachten", "next": "END_BAD" },
+        { "text": "Die Scherbe suchen", "next": "6" }
+      ]
+    },
+    "END_BAD": {
+      "text": "Die Scherbe oder die falsche Entscheidung führten zu deinem Untergang. Der Sturm verwüstet alles, was du kanntest. Du bist verloren.",
+      "choices": []
+    },
+    "END_GOOD": {
+      "text": "Mit der Scherbe im Herzen des Morgensterns gelingt es dir, den Sturm zu beruhigen. Das Dorf ist gerettet und der Sturm verzieht sich. Du hast das Gleichgewicht wiederhergestellt.",
+      "choices": []
+    },
+    "END_NEUTRAL": {
+      "text": "Du verhandelst mit dem Morgenstern. Der Sturm endet, doch das Dorf bleibt in Gefahr. Der Morgenstern ist zwar verschwunden, aber du weißt, dass die Gefahr immer wieder zurückkehren könnte.",
+      "choices": []
+    },
+    "END_HEROIC": {
+      "text": "In einem letzten Akt der Tapferkeit opferst du dich, um den Sturm aufzuhalten. Dein Mut wird nicht vergessen werden, und die Legende von deinem Opfer lebt weiter.",
+      "choices": []
+    }
+}
