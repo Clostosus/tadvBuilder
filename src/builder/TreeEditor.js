@@ -94,6 +94,9 @@ export default class TreeEditor {
 
         if (!scene) {
             li.textContent = `${sceneKey} (Szene nicht gefunden)`;
+            const addButton = this.#createAddButton(sceneKey, story);
+            addButton.classList.add('tree-addscene-btn');
+            li.appendChild(addButton);
             parentUl.appendChild(li);
             return;
         }
@@ -206,6 +209,22 @@ export default class TreeEditor {
             this.expanded.delete(sceneKey);
             // Re-render tree after deletion
             this.render(story);
+        });
+        return btn;
+    }
+
+    #createAddButton(sceneKey) {
+        const btn = document.createElement('button');
+        btn.classList.add('tree-add');
+        btn.setAttribute('aria-label', `Szene "${sceneKey}" hinzufügen`);
+        btn.textContent = '+';
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const sceneKeyTextfield = document.getElementById("creator-scene-key");
+            sceneKeyTextfield.value = sceneKey;
+            const popup = document.getElementById("create-scene-popup");
+            popup.style.display = "block";
         });
         return btn;
     }

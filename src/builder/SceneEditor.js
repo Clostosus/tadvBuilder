@@ -87,7 +87,7 @@ export default class SceneEditor {
         const keyInput = document.getElementById("editor-scene-key");
         const status = document.getElementById("editor-scene-status");
         const textInput = document.getElementById("editor-scene-text");
-        const choicesContainer = document.getElementById("choices-container");
+        const choicesContainer = document.getElementById("editor-choices-container");
         const key = keyInput.value.trim();
         const text = textInput.value.trim();
 
