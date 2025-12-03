@@ -1,0 +1,41 @@
+{
+  "start": {
+    "text": "Anna ist eine engagierte Journalistin. Eines Abends erhält sie eine anonyme Nachricht mit einem brisanten Dokument. Es enthält Beweise für Korruption innerhalb einer großen NGO, die sich offiziell für Menschenrechte einsetzt. Das Dokument könnte die Organisation zu Fall bringen, aber es betrifft auch Personen, die Anna nahe stehen. Soll sie die Wahrheit aufdecken und die Konsequenzen in Kauf nehmen, oder das Thema ruhen lassen und nichts unternehmen?",
+    "choices": [
+      {
+        "text": "Die Beweise weiter untersuchen",
+        "next": "untersuchung"
+      },
+      {
+        "text": "Die Beweise vernichten und das Thema ruhen lassen",
+        "next": "verdrängung"
+      }
+    ]
+  },
+  "untersuchung": {
+    "text": "Anna beginnt, die Beweise zu prüfen. Die Korruption reicht tiefer als gedacht, und sie entdeckt, dass die NGO Verbindungen zu mächtigen Institutionen hat. Anna fragt sich, ob sie wirklich bereit ist, diese Organisation und die damit verbundenen Menschen zu zerstören. Doch sie fühlt, dass sie die Wahrheit aufdecken muss.",
+    "choices": [
+      {
+        "text": "Die Unterlagen veröffentlichen und die Wahrheit ans Licht bringen",
+        "next": "offenbarung"
+      },
+      {
+        "text": "Die Unterlagen zurückhalten und die Beweise vernichten",
+        "next": "selbstbetrug"
+      }
+    ]
+  },
+  "verdrängung": {
+    "text": "Anna entscheidet sich, die Beweise zu vernichten und das Thema ruhen zu lassen. Sie lebt mit dem Gefühl, dass sie sich selbst betrogen hat, und fragt sich immer wieder, ob sie die richtige Entscheidung getroffen hat. Doch das Thema lässt sie nicht los, und sie spürt, dass sie etwas Großes verhindert hat.",
+    "choices": [
+      {
+        "text": "Die Vergangenheit ruhen lassen und weiterarbeiten",
+        "next": "alltäglichkeit"
+      }
+    ]
+  },
+  "offenbarung": {
+    "text": "Anna hat die Story veröffentlicht. Die Enthüllungen führen zu Rücktritten und Ermittlungen. Viele ihrer Bekannten verlieren ihre Jobs, einige müssen sich verantworten. Anna fühlt, dass sie das Richtige getan hat, doch sie ist sich gleichzeitig bewusst, dass viele Leben auf den Kopf gestellt wurden.",
+    "choices": []
+  }
+}

@@ -1,4 +1,4 @@
-import Story from "./core/Story";
+import Story from "./core/Story.js";
 
 export default class SaveLoad {
     constructor() {

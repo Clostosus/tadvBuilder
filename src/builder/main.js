@@ -2,13 +2,13 @@ import Scene from './core/Scene.js';
 import Story from "./core/Story.js";
 import SaveLoad from "./SaveLoad.js";
 import AsciiTreeRenderer from './AsciiTreeRenderer.js';
-import FormEditor from './FormEditor.js';
+import SceneEditor from './SceneEditor.js';
 import SceneRenderer from './SceneRenderer.js';
 import Feedback from './Feedback.js';
 import TreeEditor from './TreeEditor.js';
 
 let story = new Story(Scene);
-let formEditor = new FormEditor(story, Scene);
+let formEditor = new SceneEditor(story);
 
 function startStory()
 {
@@ -95,6 +95,45 @@ function applyTheme(theme) {
     }
 }
 
+function initializePopup() {
+    const initPopup = (popupId, showBtnId, closeBtnId, addChoiceBtnId, submitBtnId, choicesContainerId, action) => {
+        const popup = document.getElementById(popupId);
+        const showBtn = document.getElementById(showBtnId);
+        const closeBtn = document.getElementById(closeBtnId);
+        const addChoiceBtn = document.getElementById(addChoiceBtnId);
+        const choicesContainer = document.getElementById(choicesContainerId);
+        const submitBtn = document.getElementById(submitBtnId);
+
+        showBtn.addEventListener("click", function () {
+            popup.style.display = "block";
+        });
+        closeBtn.addEventListener("click", function () {
+            popup.style.display = "none";
+        });
+        window.addEventListener("click", function (event) {
+            if (event.target === popup) {
+                popup.style.display = "none";
+            }
+        });
+
+        addChoiceBtn.addEventListener("click", function () {
+            SceneEditor.addChoiceField(choicesContainer);
+        });
+        submitBtn.addEventListener("click", function () {
+            action();
+            popup.style.display = "none";
+        });
+    }
+
+    initPopup("create-scene-popup", "showCreatorBtn", "creator-closeBtn", "creator-add-choice-btn", "creator-submit-btn", "creator-choices-container", function() {
+        SceneEditor.addScene(story);
+    });
+
+    initPopup("edit-scene-popup", "showEditorBtn", "editor-closeBtn", "editor-add-choice-btn", "editor-submit-btn", "editor-choices-container", function() {
+        SceneEditor.editScene(story);
+    });
+}
+
 // make helper functions available for onclick to HTML file
 window.renderScene = (key) => SceneRenderer.render(story, key);
 window.removeScene = () => formEditor.removeScene();
@@ -102,10 +141,6 @@ window.removeScene = () => formEditor.removeScene();
 // Register functions
 window.addEventListener("DOMContentLoaded", () => {
     console.log("page is fully loaded");
-    document.getElementById('add-choice-field').addEventListener('click', FormEditor.addChoiceField);
-    document.getElementById('add-scene').addEventListener('click', () => formEditor.addScene());
-    document.getElementById('remove-scene').addEventListener('click', () => formEditor.removeScene());
-    document.getElementById('edit-scene').addEventListener('click', () => formEditor.editScene());
 
     document.getElementById('start-story').addEventListener('click', startStory);
     document.getElementById("btn-ascii-tree-refresh").addEventListener("click", () => {
@@ -128,4 +163,5 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("theme-select").addEventListener("change", function() {
         applyTheme(this.value);
     });
+    initializePopup();
 });
