@@ -2,13 +2,13 @@ import Scene from './core/Scene.js';
 import Story from "./core/Story.js";
 import SaveLoad from "./SaveLoad.js";
 import AsciiTreeRenderer from './AsciiTreeRenderer.js';
-import FormEditor from './FormEditor.js';
+import SceneEditor from './SceneEditor.js';
 import SceneRenderer from './SceneRenderer.js';
 import Feedback from './Feedback.js';
 import TreeEditor from './TreeEditor.js';
 
 let story = new Story(Scene);
-let formEditor = new FormEditor(story, Scene);
+let formEditor = new SceneEditor(story);
 
 function startStory()
 {
@@ -95,6 +95,37 @@ function applyTheme(theme) {
     }
 }
 
+function initializePopup() {
+    const popup = document.getElementById("popup");
+    const showModalBtn = document.getElementById("showModalBtn");
+    const closeBtn = document.getElementById("closeBtn");
+    const submitBtn = document.getElementById("submitBtn");
+
+    // Show the popup
+    showModalBtn.addEventListener("click", function() {
+        popup.style.display = "block";
+    });
+
+    // Close the popup
+    closeBtn.addEventListener("click", function() {
+        popup.style.display = "none";
+    });
+
+    // Close the popup if clicked outside
+    window.addEventListener("click", function(event) {
+        if (event.target === popup) {
+            popup.style.display = "none";
+        }
+    });
+
+    // Handle the submit button
+    submitBtn.addEventListener("click", function() {
+        const input = document.getElementById("inputField").value;
+        alert("Input: " + input);
+        popup.style.display = "none";
+    });
+}
+
 // make helper functions available for onclick to HTML file
 window.renderScene = (key) => SceneRenderer.render(story, key);
 window.removeScene = () => formEditor.removeScene();
@@ -102,9 +133,8 @@ window.removeScene = () => formEditor.removeScene();
 // Register functions
 window.addEventListener("DOMContentLoaded", () => {
     console.log("page is fully loaded");
-    document.getElementById('add-choice-field').addEventListener('click', FormEditor.addChoiceField);
+    document.getElementById('add-choice-field').addEventListener('click', SceneEditor.addChoiceField);
     document.getElementById('add-scene').addEventListener('click', () => formEditor.addScene());
-    document.getElementById('remove-scene').addEventListener('click', () => formEditor.removeScene());
     document.getElementById('edit-scene').addEventListener('click', () => formEditor.editScene());
 
     document.getElementById('start-story').addEventListener('click', startStory);
@@ -128,4 +158,5 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("theme-select").addEventListener("change", function() {
         applyTheme(this.value);
     });
+    initializePopup();
 });

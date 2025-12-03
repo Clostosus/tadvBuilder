@@ -3,12 +3,13 @@ import Feedback from "./Feedback.js";
 import SceneRenderer from "./SceneRenderer.js";
 import Scene from "./core/Scene.js";
 import Story from "./core/Story.js";
+import TreeEditor from "./TreeEditor.js";
 
 /**
  * Editor used by the form-based story builder.
  * Holds a reference to the Story instance and the Scene class.
  */
-export default class FormEditor {
+export default class SceneEditor {
     /**
      * @param {Story} storyInstance - The story instance to be edited.
      */
@@ -64,6 +65,7 @@ export default class FormEditor {
         }
         SceneRenderer.render(this.story, sceneKey);
         AsciiTreeRenderer.generateTreeAscii(this.story);
+        TreeEditor.render(this.story);
 
         // Eingabefelder leeren
         document.getElementById('scene-key').value = "";
@@ -130,6 +132,7 @@ export default class FormEditor {
         }
 
         SceneRenderer.render(this.story, this.story.root.key);
+        TreeEditor.render(this.story);
         Feedback.show(`Szene "${key}" wurde erfolgreich gelöscht.`, status, true);
         keyInput.value = "";
         document.getElementById("scene-text").value = "";

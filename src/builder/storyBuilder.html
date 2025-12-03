@@ -21,25 +21,41 @@
     </select>
 </div>
 
-<div id="sceneEditor" class="section">
-    <label>Schlüsselname der Szene:<span class="help">Ein eindeutiger Bezeichner, z. B. <code>start</code> oder <code>kapitel1</code></span></label>
-    <label for="scene-key"></label><input type="text" id="scene-key" placeholder="z. B. start">
+<div id="tree-html-section" class="section">
+    <h2>Entscheidungsbaum (HTML-Ansicht)</h2>
+    <button id="btn-html-tree-refresh">HTML-Baum aktualisieren</button>
+    <div id="tree-html-area"></div>
+    <!-- After each rendering, all content gets replaced. -->
+</div>
 
-    <label>Text der Szene:<span class="help">Der eigentliche Erzähltext, der dem Leser angezeigt wird</span></label>
-    <label for="scene-text"></label><textarea id="scene-text" rows="4" placeholder="Hier deine Szene eingeben..."></textarea>
+<div class="content" style="text-align: center; margin-top: 50px;">
+    <p>Mit dem Szeneneditor lassen sich Szenen erstellen, oder Szeneninhalte ändern. </p>
+    <button id="showModalBtn">Öffnen</button>
+</div>
 
-    <label>Entscheidungen:<span class="help">Welche Möglichkeiten der Leser hat und wohin sie führen</span></label>
-    <div id="choices-container">
-        <div class="choice-inputs">
-            <input type="text" class="choice-text" placeholder="Entscheidungstext">
-            <input type="text" class="choice-next" placeholder="Nächste Szene (Schlüssel)">
+<div class="popup" id="popup">
+    <div class="popup-content">
+        <span class="close" id="closeBtn">&times;</span>
+        <div id="sceneEditor" class="section">
+            <label>Schlüsselname der Szene:<span class="help">Ein eindeutiger Bezeichner, z. B. <code>start</code> oder <code>kapitel1</code></span></label>
+            <label for="scene-key"></label><input type="text" id="scene-key" placeholder="z. B. start">
+
+            <label>Text der Szene:<span class="help">Der eigentliche Erzähltext, der dem Leser angezeigt wird</span></label>
+            <label for="scene-text"></label><textarea id="scene-text" rows="4" placeholder="Hier deine Szene eingeben..."></textarea>
+
+            <label>Entscheidungen:<span class="help">Welche Möglichkeiten der Leser hat und wohin sie führen</span></label>
+            <div id="choices-container">
+                <div class="choice-inputs">
+                    <input type="text" class="choice-text" placeholder="Entscheidungstext">
+                    <input type="text" class="choice-next" placeholder="Nächste Szene (Schlüssel)">
+                </div>
+            </div>
+            <button id="add-choice-field">Weitere Entscheidung hinzufügen</button>
+            <button id="add-scene">Szene speichern</button>
+            <button id="edit-scene">Szeneninhalt ändern</button>
+            <pre id="scene-status">(noch keine Aktion durchgeführt)</pre>
         </div>
     </div>
-    <button id="add-choice-field">Weitere Entscheidung hinzufügen</button>
-    <button id="add-scene">Szene speichern</button>
-    <button id="edit-scene">Szeneninhalt ändern</button>
-    <button id="remove-scene">Szene löschen</button>
-    <pre id="scene-status">(noch keine Aktion durchgeführt)</pre>
 </div>
 
 <div id="play-section" class="section">
@@ -73,15 +89,6 @@
     <br>Kopierschutz dient hauptsächlich gegen Webscraper. Nur bei export als html möglich.
 
     <pre id="import-status">(kein Import durchgeführt)</pre>
-</div>
-
-<div id="tree-html-section" class="section">
-    <h2>Entscheidungsbaum (HTML-Ansicht)</h2>
-    <p class="help">Diese schreibgeschützte Ansicht rendert den Baum als verschachtelte Liste. Änderungen sind hier nicht möglich.</p>
-    <button id="btn-html-tree-refresh">HTML-Baum aktualisieren</button>
-    <div id="tree-html-area"></div>
-    <!-- Der Inhalt wird bei jedem Rendern vollständig ersetzt (immutable view). -->
-    
 </div>
 
 <script src="main.js" type="module"></script>
