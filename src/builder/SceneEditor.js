@@ -19,10 +19,10 @@ export default class SceneEditor {
 
     /**
      * Adds a new choice field to the choices container.
+     * @param {HTMLElement} parentElement
      * @returns void
      */
-    static addChoiceField() {
-        const parentElement = document.getElementById('choices-container');
+    static addChoiceField(parentElement) {
         if (!parentElement) {
             console.error('parentElement is not found.');
             return;
@@ -39,12 +39,13 @@ export default class SceneEditor {
 
     /**
      * Adds a new scene to the story.
+     * @param {Story} story
      * @returns void
      */
-    addScene() {
-        const sceneKey = document.getElementById('scene-key').value.trim();
-        const text = document.getElementById('scene-text').value.trim();
-        const editorSection = document.getElementById('sceneEditor');
+    static addScene(story) {
+        const sceneKey = document.getElementById('creator-scene-key').value.trim();
+        const text = document.getElementById('creator-scene-text').value.trim();
+        const editorSection = document.getElementById('scene-creator');
 
         if (!sceneKey || !text) {
             Feedback.show("Bitte Schlüssel und Text ausfüllen.", editorSection, false);
@@ -59,18 +60,18 @@ export default class SceneEditor {
             if (text && next) choices.set(next, text);
         });
 
-        if (!this.story.addScene(new Scene(sceneKey, text, null, choices))) {
+        if (!story.addScene(new Scene(sceneKey, text, null, choices))) {
             Feedback.show("Scene could not be added to story, key already exists.", editorSection, false);
             return;
         }
-        SceneRenderer.render(this.story, sceneKey);
-        AsciiTreeRenderer.generateTreeAscii(this.story);
-        TreeEditor.render(this.story);
+        SceneRenderer.render(story, sceneKey);
+        AsciiTreeRenderer.generateTreeAscii(story);
+        TreeEditor.render(story);
 
         // Eingabefelder leeren
-        document.getElementById('scene-key').value = "";
-        document.getElementById('scene-text').value = "";
-        const choicesContainer = document.getElementById('choices-container');
+        document.getElementById('creator-scene-key').value = "";
+        document.getElementById('creator-scene-text').value = "";
+        const choicesContainer = document.getElementById('creator-choices-container');
         choicesContainer.innerHTML = `<div class="choice-inputs">
     <input type="text" class="choice-text" placeholder="Entscheidungstext">
     <input type="text" class="choice-next" placeholder="Nächste Szene (Schlüssel)">
@@ -79,10 +80,13 @@ export default class SceneEditor {
         Feedback.show(`Szene wurde gespeichert.`, editorSection, true)
     }
 
-    editScene() {
-        const keyInput = document.getElementById("scene-key");
-        const status = document.getElementById("scene-status");
-        const textInput = document.getElementById("scene-text");
+    /**
+     * @param {Story} story
+     */
+    static editScene(story) {
+        const keyInput = document.getElementById("editor-scene-key");
+        const status = document.getElementById("editor-scene-status");
+        const textInput = document.getElementById("editor-scene-text");
         const choicesContainer = document.getElementById("choices-container");
         const key = keyInput.value.trim();
         const text = textInput.value.trim();
@@ -106,36 +110,10 @@ export default class SceneEditor {
             choices.set(choiceKeyInput.value.trim(), choiceTextInput.value.trim());
         }
 
-        let success = this.story.editSceneContent(key, text, choices);
+        let success = story.editSceneContent(key, text, choices);
         if (success) {
-            SceneRenderer.render(this.story, key);
+            SceneRenderer.render(story, key);
             Feedback.show(`Szene wurde erfolgreich bearbeitet.`, status, true);
         }
-    }
-
-
-    removeScene() {
-        const keyInput = document.getElementById("scene-key");
-        const key = keyInput.value.trim();
-        const status = document.getElementById("scene-status");
-
-        if (!key) {
-            Feedback.show("Bitte gib den Schlüssel der zu löschenden Szene ein.", status, false);
-            return;
-        }
-        if (!confirm(`Soll die Szene "${key}" wirklich gelöscht werden?`)) return;
-
-        const success = this.story.removeScene(key);
-        if (!success) {
-            Feedback.show(`Keine Szene mit dem Schlüssel "${key}" gefunden.`, status, false);
-            return;
-        }
-
-        SceneRenderer.render(this.story, this.story.root.key);
-        TreeEditor.render(this.story);
-        Feedback.show(`Szene "${key}" wurde erfolgreich gelöscht.`, status, true);
-        keyInput.value = "";
-        document.getElementById("scene-text").value = "";
-        AsciiTreeRenderer.generateTreeAscii(this.story);
     }
 }

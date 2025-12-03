@@ -96,33 +96,41 @@ function applyTheme(theme) {
 }
 
 function initializePopup() {
-    const popup = document.getElementById("popup");
-    const showModalBtn = document.getElementById("showModalBtn");
-    const closeBtn = document.getElementById("closeBtn");
-    const submitBtn = document.getElementById("submitBtn");
+    const initPopup = (popupId, showBtnId, closeBtnId, addChoiceBtnId, submitBtnId, choicesContainerId, action) => {
+        const popup = document.getElementById(popupId);
+        const showBtn = document.getElementById(showBtnId);
+        const closeBtn = document.getElementById(closeBtnId);
+        const addChoiceBtn = document.getElementById(addChoiceBtnId);
+        const choicesContainer = document.getElementById(choicesContainerId);
+        const submitBtn = document.getElementById(submitBtnId);
 
-    // Show the popup
-    showModalBtn.addEventListener("click", function() {
-        popup.style.display = "block";
-    });
-
-    // Close the popup
-    closeBtn.addEventListener("click", function() {
-        popup.style.display = "none";
-    });
-
-    // Close the popup if clicked outside
-    window.addEventListener("click", function(event) {
-        if (event.target === popup) {
+        showBtn.addEventListener("click", function () {
+            popup.style.display = "block";
+        });
+        closeBtn.addEventListener("click", function () {
             popup.style.display = "none";
-        }
+        });
+        window.addEventListener("click", function (event) {
+            if (event.target === popup) {
+                popup.style.display = "none";
+            }
+        });
+
+        addChoiceBtn.addEventListener("click", function () {
+            SceneEditor.addChoiceField(choicesContainer);
+        });
+        submitBtn.addEventListener("click", function () {
+            action();
+            popup.style.display = "none";
+        });
+    }
+
+    initPopup("create-scene-popup", "showCreatorBtn", "creator-closeBtn", "creator-add-choice-btn", "creator-submit-btn", "creator-choices-container", function() {
+        SceneEditor.addScene(story);
     });
 
-    // Handle the submit button
-    submitBtn.addEventListener("click", function() {
-        const input = document.getElementById("inputField").value;
-        alert("Input: " + input);
-        popup.style.display = "none";
+    initPopup("edit-scene-popup", "showEditorBtn", "editor-closeBtn", "editor-add-choice-btn", "editor-submit-btn", "editor-choices-container", function() {
+        SceneEditor.editScene(story);
     });
 }
 
@@ -133,9 +141,6 @@ window.removeScene = () => formEditor.removeScene();
 // Register functions
 window.addEventListener("DOMContentLoaded", () => {
     console.log("page is fully loaded");
-    document.getElementById('add-choice-field').addEventListener('click', SceneEditor.addChoiceField);
-    document.getElementById('add-scene').addEventListener('click', () => formEditor.addScene());
-    document.getElementById('edit-scene').addEventListener('click', () => formEditor.editScene());
 
     document.getElementById('start-story').addEventListener('click', startStory);
     document.getElementById("btn-ascii-tree-refresh").addEventListener("click", () => {
